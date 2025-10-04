@@ -7,8 +7,7 @@
   
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  
-  <!-- Leaflet Draw CSS -->
+  <!-- Leaflet Draw for drawing on map (NEW) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
   
   <!-- Google Fonts (Inter) -->
@@ -53,16 +52,17 @@
     #app {
         display: flex;
         flex-direction: column;
+        height: 100vh;
     }
 
     .container {
         display: grid;
         grid-template-columns: 380px 1fr;
-        gap: 24px;
-        padding: 24px;
+        gap: 8px;
+        padding: 8px;
         width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
+        height: calc(100vh - 16px);
+        margin: 0;
         flex-grow: 1;
         overflow: hidden;
     }
@@ -70,27 +70,30 @@
     .card {
         background: var(--bg-card);
         backdrop-filter: blur(8px);
-        border-radius: var(--radius);
+        border-radius: 12px;
         padding: 20px;
         box-shadow: var(--shadow);
         border: 1px solid var(--border);
+        height: 100%;
+        overflow-y: auto;
     }
 
     #map {
         height: 100%;
         min-height: 400px;
-        border-radius: var(--radius);
+        border-radius: 12px;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
         z-index: 10;
         overflow: hidden;
+        width: 100%;
     }
     
     .sidebar {
         display: flex;
         flex-direction: column;
         gap: 20px;
-        max-height: calc(100vh - 48px);
+        max-height: 100vh;
         overflow-y: auto;
     }
     
@@ -234,8 +237,8 @@
     /* Data Grid & Results */
     .data-grid {
         display: grid;
-        grid-template-columns: 1.5fr 1fr;
-        gap: 24px;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
         height: 100%;
         min-height: 250px;
     }
@@ -349,135 +352,138 @@
       color: var(--text-muted);
       padding: 12px 0;
       border-top: 1px solid var(--border);
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: var(--bg-card);
     }
     
-    /* Map Marker Popup Styling */
-    .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-        background: var(--bg-card) !important;
-        color: var(--text-primary) !important;
-        box-shadow: var(--shadow);
+    /* Map Elements (NEW/UPDATED) */
+    .leaflet-container {
+        cursor: crosshair;
     }
-    .leaflet-popup-content {
-        padding: 10px !important;
-    }
-
-    /* Leaflet Draw Customization */
     .leaflet-draw-toolbar a {
         background-color: var(--bg-card) !important;
-        border-radius: 8px;
+        border-color: var(--border) !important;
         color: var(--text-primary) !important;
-        border: 1px solid var(--border);
+        opacity: 0.8;
     }
-    .leaflet-draw-actions a {
-        background-color: var(--primary) !important;
-        color: white !important;
-    }
-    .leaflet-draw-actions a:hover {
+    .leaflet-draw-toolbar a:hover {
+        opacity: 1;
         background-color: var(--primary-dark) !important;
     }
-
-    /* Loader */
-    #loader {
+    
+    /* Map Info Panel (NEW) */
+    #infoPanel {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2000;
-        background-color: var(--bg-card);
-        padding: 2rem 3rem;
-        border-radius: 1rem;
-        box-shadow: var(--shadow);
-        text-align: center;
-        display: none;
-        border: 1px solid var(--border);
-    }
-    .spinner {
-        border: 6px solid var(--bg-card-light);
-        border-top: 6px solid var(--primary);
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Tutorial */
-    .tutorial-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 3000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-    }
-    .tutorial-card {
-        background: var(--bg-card);
-        border-radius: var(--radius);
-        padding: 30px;
-        max-width: 500px;
-        margin: 20px;
-        box-shadow: var(--shadow);
-        border: 1px solid var(--border);
-    }
-    .tutorial-step {
-        display: none;
-    }
-    .tutorial-step.active {
-        display: block;
-    }
-    .tutorial-navigation {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
-    .tutorial-indicators {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        margin: 15px 0;
-    }
-    .tutorial-indicator {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--text-muted);
-        cursor: pointer;
-    }
-    .tutorial-indicator.active {
-        background: var(--primary);
-    }
-
-    /* Notification */
-    .custom-notification {
-        position: absolute;
-        top: 10px;
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: var(--warning);
-        color: #333;
-        padding: 10px 20px;
+        background-color: var(--bg-card);
+        padding: 10px 15px;
         border-radius: 8px;
-        z-index: 1001;
+        border: 1px solid var(--border);
+        z-index: 15;
         box-shadow: var(--shadow);
+        color: var(--text-secondary);
         font-size: 14px;
-        font-weight: 500;
+        min-width: 250px;
+        text-align: center;
     }
+    #infoPanel strong {
+        color: var(--text-primary);
+    }
+    .hidden { display: none; }
+
+    /* Help Button (NEW) */
+    #helpButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 15;
+        padding: 8px 12px;
+        background: var(--bg-card);
+        color: var(--secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    #helpButton:hover {
+        background: rgba(43, 140, 190, 0.2);
+    }
+
+    /* Modal Styling (NEW) */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.3s;
+    }
+    .modal-overlay.active {
+        visibility: visible;
+        opacity: 1;
+    }
+    .modal-content {
+        background: var(--bg-dark);
+        border-radius: var(--radius);
+        padding: 30px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: var(--shadow);
+        border: 2px solid var(--primary);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .modal-content h3 {
+        color: var(--primary);
+        font-size: 24px;
+        margin-top: 0;
+    }
+    .modal-content ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+        margin-top: 15px;
+    }
+    .modal-content li {
+        margin-bottom: 15px;
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+    .modal-content li strong {
+        color: var(--text-primary);
+    }
+    .modal-close {
+        float: right;
+        font-size: 24px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: color 0.2s;
+    }
+    .modal-close:hover {
+        color: var(--danger);
+    }
+
 
     /* Responsive design */
     @media (max-width: 1100px) {
         .container {
             grid-template-columns: 1fr;
             grid-template-rows: auto 1fr;
-            gap: 16px;
-            padding: 16px;
+            gap: 8px;
+            padding: 8px;
+            height: calc(100vh - 16px);
         }
         
         .sidebar {
@@ -488,61 +494,17 @@
         
         .data-grid {
             grid-template-columns: 1fr;
+            gap: 0;
+        }
+        
+        footer {
+            position: relative;
         }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Tutorial Overlay -->
-    <div class="tutorial-overlay" id="tutorialOverlay">
-        <div class="tutorial-card">
-            <div class="tutorial-step active" id="step1-tutorial">
-                <h3 class="card-title mb-4">Ласкаво просимо до AgroVerse! 🚀</h3>
-                <p class="text-sm text-gray-300 mb-4">Цей посібник допоможе вам навчитися користуватися нашим симулятором ферми з даними NASA.</p>
-                <p class="text-sm text-gray-400">Натисніть "Далі" щоб продовжити.</p>
-            </div>
-            
-            <div class="tutorial-step" id="step2-tutorial">
-                <h3 class="card-title mb-4">Крок 1: Оберіть дату</h3>
-                <p class="text-sm text-gray-300 mb-4">Виберіть дату для аналізу. Деякі дані оновлюються раз на 8 днів.</p>
-                <p class="text-sm text-gray-400">Для кращих результатів обирайте дати на 1-8 днів раніше.</p>
-            </div>
-            
-            <div class="tutorial-step" id="step3-tutorial">
-                <h3 class="card-title mb-4">Крок 2: Намалюйте ферму</h3>
-                <p class="text-sm text-gray-300 mb-4">Використовуйте інструмент "Полігон" на карті, щоб окреслити вашу ділянку.</p>
-                <p class="text-sm text-gray-400">Клацайте на карті, щоб створити кути полігону, та двічі клацніть для завершення.</p>
-            </div>
-            
-            <div class="tutorial-step" id="step4-tutorial">
-                <h3 class="card-title mb-4">Крок 3: Налаштуйте параметри</h3>
-                <p class="text-sm text-gray-300 mb-4">Оберіть культуру, встановіть полив та добрива для симуляції.</p>
-                <p class="text-sm text-gray-400">Балансуйте між врожайністю та екологічністю.</p>
-            </div>
-            
-            <div class="tutorial-step" id="step5-tutorial">
-                <h3 class="card-title mb-4">Крок 4: Запустіть симуляцію</h3>
-                <p class="text-sm text-gray-300 mb-4">Натисніть "Запустити симуляцію" для отримання результатів.</p>
-                <p class="text-sm text-gray-400">Система проаналізує дані NASA та надасть рекомендації.</p>
-            </div>
-            
-            <div class="tutorial-indicators">
-                <div class="tutorial-indicator active" data-step="1"></div>
-                <div class="tutorial-indicator" data-step="2"></div>
-                <div class="tutorial-indicator" data-step="3"></div>
-                <div class="tutorial-indicator" data-step="4"></div>
-                <div class="tutorial-indicator" data-step="5"></div>
-            </div>
-            
-            <div class="tutorial-navigation">
-                <button class="btn btn-ghost" id="prevTutorial">Назад</button>
-                <button class="btn" id="nextTutorial">Далі</button>
-                <button class="btn" id="skipTutorial" style="display: none;">Пропустити</button>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
       
       <!-- Left Sidebar - Controls -->
@@ -552,39 +514,25 @@
             <h1 class="app-title">AgroVerse</h1>
             <div class="app-subtitle">Farm Navigators — Місія GIS</div>
           </div>
-          <div class="flex gap-2">
-            <button class="game-button" id="showTutorial" title="Показати інструкцію">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/>
-              </svg>
-              Допомога
-            </button>
-            <a href="#" class="game-button" title="Game feature is under development">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-              </svg>
-              Game (MVP)
-            </a>
-          </div>
-        </div>
-
-        <!-- Date Selection -->
-        <div class="form-group">
-          <label for="date-picker">Крок 1: Оберіть дату аналізу</label>
-          <input type="date" id="date-picker" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 text-white">
-          <div class="text-xs text-gray-400 mt-1">Деякі дані оновлюються раз на 8 днів</div>
+          <!-- Placeholder for the game link -->
+          <a href="#" class="game-button" title="Game feature is under development">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+            </svg>
+            Game (MVP)
+          </a>
         </div>
         
         <div class="data-panel">
-            <div class="data-summary-title">Обрана ділянка</div>
-            <div id="coords" class="coords">Намалюйте полігон на карті</div>
+            <div class="data-summary-title">Обрана ділянка та Центроїд</div>
+            <div id="coords" class="coords">Намалюйте ділянку на карті</div>
             <div id="dataSummary" class="data-summary-content">
-                Використовуйте інструмент "Полігон" на карті, щоб окреслити вашу зону інтересу.
+                Оберіть область на карті, щоб отримати метеорологічні дані від NASA POWER API та запустити симуляцію.
             </div>
         </div>
 
         <div class="form-group">
-          <label for="cropSelect">Крок 2: Оберіть культуру</label>
+          <label for="cropSelect">Планування: Обрати культуру</label>
           <select id="cropSelect">
             <option value="maize">Кукурудза</option>
             <option value="wheat">Пшениця</option>
@@ -594,7 +542,7 @@
         </div>
 
         <div class="form-group">
-          <label for="irrigation">Полив (мм / день)</label>
+          <label for="irrigation">Планування: Полив (мм / день)</label>
           <input id="irrigation" type="range" min="0" max="10" step="0.5" value="3">
           <div class="range-value">
             <span>Інтенсивність поливу</span>
@@ -603,7 +551,7 @@
         </div>
 
         <div class="form-group">
-          <label for="fert">Добрива (кг / га)</label>
+          <label for="fert">Планування: Добрива (кг / га)</label>
           <input id="fert" type="range" min="0" max="200" step="10" value="80">
           <div class="range-value">
             <span>Внесено добрив (N)</span>
@@ -626,49 +574,44 @@
             Скинути
           </button>
         </div>
-
-        <div class="mt-4 p-4 bg-blue-900 border-l-4 border-blue-400 text-blue-200 text-sm rounded">
-          <p><strong>Примітка:</strong> Деякі дані (NDVI, температура) оновлюються раз на 8 днів. Якщо шар не відображається, спробуйте обрати дату на 1-8 днів раніше.</p>
-        </div>
         
         <div class="log-container">
             <label>Журнал активності</label>
             <div class="log" id="log">
                 <div class="log-entry">
-                    <span class="log-time">[Init]</span> Система готова. Оберіть дату та намалюйте ділянку на карті.
+                    <span class="log-time">[Init]</span> Чекаю на вибір ділянки на карті.
                 </div>
             </div>
         </div>
       </div>
 
       <!-- Right Panel - Map and Data Grid -->
-      <div class="flex-grow flex flex-col gap-6">
-        <div style="flex-grow: 1; position: relative;">
+      <div style="display: flex; flex-direction: column; height: 100%; width: 100%;">
+        <div style="flex: 1; position: relative; height: 100%;">
           <!-- Map container -->
-          <div id="map"></div>
+          <div id="map" style="height: 100%; width: 100%;"></div>
           
-          <!-- Loader -->
-          <div id="loader">
-            <div class="spinner"></div>
-            <p class="text-lg font-semibold text-gray-300">Обробка запиту до NASA...</p>
-            <p class="text-sm text-gray-400">Завантажуємо супутникові дані.</p>
-          </div>
+          <!-- Map Info Panel (NEW) -->
+          <div id="infoPanel" class="hidden"></div>
+          
+          <!-- Help Button (NEW) -->
+          <button id="helpButton">Допомога (Карта)</button>
 
           <!-- Errors Notification -->
           <div id="errors"></div>
         </div>
 
         <!-- Data Grid -->
-        <div class="data-grid">
-          <div class="card data-card">
+        <div class="data-grid" style="height: 1; min-height: 200px;">
+          <div class="card" style="border-bottom: 1px solid var(--border);">
             <div class="card-header">
               <h3 class="card-title">Прогноз погоди / Дані NASA POWER</h3>
-              <div class="card-subtitle">Отримано метеорологічні дані для симуляції.</div>
+              <div class="card-subtitle">Отримано метеорологічні дані для центроїда ділянки.</div>
             </div>
-            <div id="powerDataSummary" style="margin-top: 15px;">Намалюйте ділянку та оберіть дату для перегляду даних.</div>
+            <div id="powerDataSummary" style="margin-top: 15px;">Намалюйте ділянку, щоб побачити дані.</div>
           </div>
 
-          <div class="card data-card">
+          <div class="card" style="border-left: 1px solid var(--border);">
             <div class="card-header">
               <h3 class="card-title">Підсумок сезону</h3>
               <div class="card-subtitle">Оцінка екологічності та ефективності</div>
@@ -695,12 +638,38 @@
         </div>
       </div>
     </div>
-    <footer>Прототип — використано NASA POWER API & GIBS. У повній версії будуть інші сервіси.</footer>
+    <footer>Прототип — використано NASA POWER API. У повній версії будуть інші сервіси.</footer>
+  </div>
+
+  <!-- Help Modal (NEW) -->
+  <div id="helpModal" class="modal-overlay">
+      <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <h3>Як користуватися інструментами ГІС</h3>
+          <p>Щоб запустити симуляцію, вам потрібно **намалювати** межі вашого сільськогосподарського поля на карті за допомогою інструментів Leaflet Draw.</p>
+          <ol>
+              <li>
+                  <strong>Виберіть інструмент малювання:</strong> На панелі інструментів карти (зазвичай зліва вгорі) натисніть на іконку **полігону** (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 17H7V7H17V17ZM12 4.5L14.5 9.5H9.5L12 4.5Z" fill="currentColor"/></svg>).
+              </li>
+              <li>
+                  <strong>Намалюйте ділянку:</strong> Клацайте на карті, щоб встановити кути вашого поля. Щоб завершити полігон, клацніть по початковій точці.
+              </li>
+              <li>
+                  <strong>Перевірка даних:</strong> Після завершення малювання внизу карти з'явиться **Площа** ділянки, а в бічній панелі оновляться координати **центроїда** (середньої точки).
+              </li>
+              <li>
+                  <strong>Редагування:</strong> Якщо потрібно змінити форму, натисніть на іконку **редагування** (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="currentColor"/></svg>) на панелі інструментів.
+              </li>
+              <li>
+                  <strong>Запуск симуляції:</strong> Як тільки ділянка намальована та обрані параметри (Культура, Полив, Добрива), кнопка **"Запустити симуляцію"** стане активною.
+              </li>
+          </ol>
+      </div>
   </div>
 
   <!-- Leaflet & GIS Libraries -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <!-- Leaflet Draw -->
+  <!-- Leaflet Draw for drawing on map (NEW) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
   <!-- Turf.js для геооперацій -->
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
@@ -708,26 +677,18 @@
   <script>
     // --- ГЛОБАЛЬНІ ЗМІННІ ---
     let map;
-    let drawnLayer = null;
-    let mapLayers = {};
-    let layerControl = null;
-    let drawnItems = null;
-    let drawControl = null;
+    let drawnItems; // Зберігає шари, намальовані користувачем
+    let drawnLayer = null; // Поточний намальований полігон (Field)
+    let geoData = null; // Зберігає центроїд обраної ділянки (Lat/Lon)
     
     const errorsEl = document.getElementById('errors');
     const runSimBtn = document.getElementById('runSim');
     const coordsEl = document.getElementById('coords');
     const powerDataSummaryEl = document.getElementById('powerDataSummary');
-    const datePicker = document.getElementById('date-picker');
-    const loader = document.getElementById('loader');
+    const infoPanel = document.getElementById('infoPanel');
     
-    // Tutorial variables
-    let currentTutorialStep = 1;
-    const totalTutorialSteps = 5;
-
     // --- ДОПОМІЖНІ ФУНКЦІЇ ---
     
-    // Функція для відображення помилок
     function showError(msg) {
       console.error(msg);
       errorsEl.textContent = msg;
@@ -737,7 +698,6 @@
       }, 5000);
     }
     
-    // Функція для додавання повідомлень у лог
     function log(text) {
       const logEl = document.getElementById('log');
       const entry = document.createElement('div');
@@ -746,7 +706,6 @@
       entry.innerHTML = `<span class="log-time">[${time}]</span> ${text}`;
       logEl.prepend(entry);
       
-      // Обмеження кількості записів у лозі до 10
       if (logEl.children.length > 10) {
         logEl.removeChild(logEl.lastChild);
       }
@@ -766,7 +725,7 @@
 
     // Встановлення результатів симуляції
     function displaySimulationResults(results) {
-      document.getElementById('yieldVal').textContent = `${results.yield} кг`;
+      document.getElementById('yieldVal').textContent = `${results.yield} кг/га`;
       document.getElementById('waterVal').textContent = `${results.water} м³`;
       document.getElementById('ecoVal').textContent = results.eco;
       document.getElementById('scoreVal').textContent = results.score;
@@ -775,233 +734,221 @@
 
     // Скидання форми до початкового стану
     function resetForm() {
+      // Скидання параметрів
       document.getElementById('irrigation').value = 3;
       document.getElementById('irrigationOut').textContent = '3.0';
       document.getElementById('fert').value = 80;
       document.getElementById('fertOut').textContent = '80';
       document.getElementById('cropSelect').value = 'maize';
-      coordsEl.textContent = 'Намалюйте полігон на карті';
-      powerDataSummaryEl.innerHTML = 'Намалюйте ділянку та оберіть дату для перегляду даних.';
       
-      // Скидання результатів
+      // Скидання UI
+      coordsEl.textContent = 'Намалюйте ділянку на карті';
+      powerDataSummaryEl.innerHTML = 'Намалюйте ділянку, щоб побачити дані.';
       document.getElementById('yieldVal').textContent = '—';
       document.getElementById('waterVal').textContent = '—';
       document.getElementById('ecoVal').textContent = '—';
       document.getElementById('scoreVal').textContent = '—';
+      infoPanel.classList.add('hidden');
+      infoPanel.innerHTML = '';
       
       // Скидання карти
+      geoData = null;
+      runSimBtn.disabled = true;
       if (drawnLayer) {
         drawnItems.removeLayer(drawnLayer);
         drawnLayer = null;
       }
-      
-      Object.values(mapLayers).forEach(layer => map.removeLayer(layer));
-      mapLayers = {};
-      if (layerControl) map.removeControl(layerControl);
 
-      updateUIState();
       log('Параметри скинуто до початкових значень');
     }
 
-    // Оновлення стану UI
+    // --- ЛОГІКА КАРТИ ТА ГІС (НОВА) ---
+    
+    // Оновлює UI після малювання/редагування ділянки
     function updateUIState() {
-      if (drawnLayer && datePicker.value) {
-        runSimBtn.disabled = false;
-      } else {
-        runSimBtn.disabled = true;
-      }
-    }
-
-    // Функція для відображення тимчасового сповіщення на карті
-    function showErrorNotification(layerName) {
-      const notification = L.DomUtil.create('div', 'custom-notification', map.getContainer());
-      notification.innerHTML = `Дані для шару "${layerName}" на обрану дату відсутні. Спробуйте іншу дату.`;
-      
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
+        if (!drawnLayer) {
+            geoData = null;
+            runSimBtn.disabled = true;
+            coordsEl.textContent = 'Намалюйте ділянку на карті';
+            infoPanel.classList.add('hidden');
+            log('Ділянку видалено. Потрібно намалювати нову.');
+            return;
         }
-      }, 5000);
+
+        try {
+            // 1. Отримати GeoJSON полігон
+            const polygon = drawnLayer.toGeoJSON();
+            
+            // 2. Розрахувати центроїд для NASA POWER API
+            const centroid = turf.centroid(polygon);
+            const lat = centroid.geometry.coordinates[1].toFixed(4);
+            const lon = centroid.geometry.coordinates[0].toFixed(4);
+            geoData = { lat, lon };
+            
+            // 3. Розрахувати площу в гектарах
+            const areaM2 = turf.area(polygon);
+            const areaHa = (areaM2 / 10000).toFixed(2);
+
+            // 4. Оновити UI
+            coordsEl.innerHTML = `<strong>Центроїд:</strong> Шир: ${lat}, Дов: ${lon}`;
+            infoPanel.innerHTML = `<strong>Площа:</strong> ${areaHa} гектарів<br><strong>Центроїд:</strong> (${lat}, ${lon})`;
+            infoPanel.classList.remove('hidden');
+            runSimBtn.disabled = false;
+            
+            log(`Ділянку оновлено. Площа: ${areaHa} га. Центроїд використовується для даних NASA.`);
+            
+            // Завантаження даних NASA POWER
+            fetchNasaPowerData();
+
+        } catch(e) {
+            showError(`Помилка ГІС: Не вдалося розрахувати центроїд або площу. ${e.message}`);
+            runSimBtn.disabled = true;
+            geoData = null;
+        }
     }
 
-    function getSelectedDate() {
-      return datePicker.value;
-    }
 
-    // --- ЛОГІКА КАРТИ ТА ПОДІЙ ---
-
-    // Ініціалізація Leaflet карти
+    // Ініціалізація Leaflet карти та інструментів малювання
     function initializeMap() {
       map = L.map('map', {
         minZoom: 2,
-        maxZoom: 18,
+        // Видалено maxZoom: 10, тепер без обмежень на збільшення (використовується maxZoom з tileLayer)
         worldCopyJump: false,
         maxBounds: [[-85, -180], [85, 180]],
         maxBoundsViscosity: 1.0
-      }).setView([48.3794, 31.1656], 6); // Центр України
+      }).setView([48.3794, 31.1656], 5); // Центр України
 
-      // Base layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
-      // Draw controls
+      // Ініціалізація шару для малювання
       drawnItems = new L.FeatureGroup();
       map.addLayer(drawnItems);
-
-      drawControl = new L.Control.Draw({
+      
+      // Ініціалізація Leaflet Draw Control
+      const drawControl = new L.Control.Draw({
         edit: {
-          featureGroup: drawnItems,
-          remove: true
+            featureGroup: drawnItems,
+            poly: { allowIntersection: false } // Заборона самоперетину полігонів
         },
         draw: {
-          polygon: {
-            allowIntersection: false,
-            showArea: true
-          },
-          polyline: false,
-          rectangle: false,
-          circle: false,
-          marker: false,
-          circlemarker: false
+            polygon: {
+                // FIX: Замінено var(--secondary) на рядок з колірним кодом '#cbe22b'
+                shapeOptions: {
+                    color: '#cbe22b' // Колір контуру (Lime Green)
+                },
+                allowIntersection: false,
+                showArea: true
+            },
+            polyline: false,
+            circle: false,
+            rectangle: false,
+            marker: false, // Відключаємо простий маркер, тепер малюємо ділянку
+            circlemarker: false
         }
       });
       map.addControl(drawControl);
 
-      // Map events for drawing
+      // Обробники подій Leaflet Draw (замість handleMapClick)
       map.on(L.Draw.Event.CREATED, (e) => {
-        if (drawnLayer) drawnItems.removeLayer(drawnLayer);
-        drawnLayer = e.layer;
-        drawnItems.addLayer(drawnLayer);
-        
-        const area = L.GeometryUtil.geodesicArea(drawnLayer.getLatLngs()[0]);
-        const areaHa = (area / 10000).toFixed(2);
-        coordsEl.textContent = `Площа: ${areaHa} га`;
-        
-        updateUIState();
-        log(`Намальовано ділянку площею ${areaHa} га`);
+          if (drawnLayer) drawnItems.removeLayer(drawnLayer);
+          drawnLayer = e.layer;
+          drawnItems.addLayer(drawnLayer);
+          updateUIState();
       });
 
       map.on(L.Draw.Event.EDITED, (e) => {
-        e.layers.eachLayer((layer) => { 
-          drawnLayer = layer; 
-          const area = L.GeometryUtil.geodesicArea(drawnLayer.getLatLngs()[0]);
-          const areaHa = (area / 10000).toFixed(2);
-          coordsEl.textContent = `Площа: ${areaHa} га`;
-        });
-        updateUIState();
-        log('Ділянку відредаговано');
+          e.layers.eachLayer((layer) => { drawnLayer = layer; });
+          updateUIState();
       });
 
       map.on(L.Draw.Event.DELETED, () => {
-        drawnLayer = null;
-        coordsEl.textContent = 'Намалюйте полігон на карті';
-        updateUIState();
-        log('Ділянку видалено');
+          drawnLayer = null;
+          updateUIState();
       });
     }
-
-    // --- ЛОГІКА NASA POWER API & GIBS ---
-
-    // Завантаження даних NASA GIBS
-    function fetchNasaData() {
-      if (!drawnLayer) {
-        showError('Будь ласка, спочатку намалюйте ділянку на карті.');
-        return;
-      }
-      if (!datePicker.value) {
-        showError('Будь ласка, оберіть дату для аналізу.');
-        return;
-      }
-
-      loader.style.display = 'flex';
+    
+    // Налаштування всіх обробників подій
+    function setupEventListeners() {
+      const irrigationInput = document.getElementById('irrigation');
+      const fertInput = document.getElementById('fert');
+      const runSimBtn = document.getElementById('runSim');
+      const resetBtn = document.getElementById('reset');
       
-      // Clean up previous layers
-      Object.values(mapLayers).forEach(layer => map.removeLayer(layer));
-      mapLayers = {};
-      if (layerControl) map.removeControl(layerControl);
+      const helpButton = document.getElementById('helpButton');
+      const helpModal = document.getElementById('helpModal');
+      const modalClose = document.querySelector('.modal-close');
 
-      const selectedDate = getSelectedDate();
+
+      // Range input events
+      irrigationInput.addEventListener('input', updateIrrigationValue);
+      fertInput.addEventListener('input', updateFertilizerValue);
+
+      // Action buttons
+      runSimBtn.addEventListener('click', runSimulation);
+      resetBtn.addEventListener('click', resetForm);
       
-      const nasaGibsLayers = {
-        "Супутниковий знімок (True Color)": `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${selectedDate}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`,
-        "Індекс вегетації (NDVI)": `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_NDVI_8Day/default/${selectedDate}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png`,
-        "Вологість ґрунту (SMAP)": `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/SMAP_L3_SM_P_E_Daily/default/${selectedDate}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png`,
-        "Температура поверхні (день)": `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_LST_Day_8Day/default/${selectedDate}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png`
-      };
+      // Help Modal events
+      helpButton.addEventListener('click', () => { helpModal.classList.add('active'); });
+      modalClose.addEventListener('click', () => { helpModal.classList.remove('active'); });
+      helpModal.addEventListener('click', (e) => { 
+          if (e.target.id === 'helpModal') { 
+              helpModal.classList.remove('active'); 
+          } 
+      });
 
-      const baseLayers = { 
-        "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-        })
-      };
-      
-      const overlayLayers = {};
-
-      for (const [name, url] of Object.entries(nasaGibsLayers)) {
-        const layer = L.tileLayer(url, {
-          attribution: 'NASA GIBS',
-          opacity: 0.75,
-          maxNativeZoom: getLayerMaxZoom(name) 
-        });
-
-        // Add error handling for each tile layer
-        layer.on('tileerror', (e) => {
-          if (!layer.hasError) {
-            showErrorNotification(name);
-            layer.hasError = true;
-          }
-        });
-        layer.on('load', () => { layer.hasError = false; });
-        
-        overlayLayers[name] = layer;
-        mapLayers[name] = layer;
-      }
-      
-      // Add first overlay layer by default
-      if (Object.keys(overlayLayers).length > 0) {
-        const firstLayer = Object.values(overlayLayers)[0];
-        firstLayer.addTo(map);
-      }
-
-      layerControl = L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
-      map.fitBounds(drawnLayer.getBounds());
-      
-      // Update info panel
-      const area = L.GeometryUtil.geodesicArea(drawnLayer.getLatLngs()[0]);
-      const areaHa = (area / 10000).toFixed(2);
-      powerDataSummaryEl.innerHTML = `
-        <div class="text-sm">
-          <p><strong>Площа:</strong> ${areaHa} гектарів</p>
-          <p><strong>Дата аналізу:</strong> ${selectedDate}</p>
-          <p class="mt-2 text-green-400">Дані NASA успішно завантажено!</p>
-        </div>
-      `;
-
-      setTimeout(() => {
-        loader.style.display = 'none';
-        log(`Дані NASA завантажено для ділянки ${areaHa} га (${selectedDate})`);
-      }, 2000);
+      // Initial values display
+      document.getElementById('irrigationOut').textContent = irrigationInput.value;
+      document.getElementById('fertOut').textContent = fertInput.value;
     }
 
-    function getLayerMaxZoom(layerName) {
-      if (layerName.includes("True Color")) return 9;
-      if (layerName.includes("NDVI")) return 7;
-      if (layerName.includes("Температура")) return 7;
-      if (layerName.includes("SMAP")) return 6;
-      return 8;
+
+    // --- ЛОГІКА NASA POWER API & СИМУЛЯЦІЇ ---
+
+    // Емуляція функції, що отримує дані від NASA POWER API
+    function fetchNasaPowerData() {
+      if (!geoData) {
+        powerDataSummaryEl.innerHTML = 'Намалюйте ділянку, щоб побачити дані.';
+        return;
+      }
+
+      powerDataSummaryEl.innerHTML = 'Завантаження даних... <span style="color: var(--secondary);">(Емуляція)</span>';
+      
+      // Емуляція затримки мережі
+      setTimeout(() => {
+        // Емуляція отриманих метеоданих
+        const data = {
+          tavg: (20 + Math.random() * 5).toFixed(1), // Середня температура
+          pr: (3 + Math.random() * 2).toFixed(1), // Опади
+          wind: (4 + Math.random() * 3).toFixed(1), // Швидкість вітру
+          srad: (15 + Math.random() * 5).toFixed(1) // Сонячна радіація
+        };
+
+        powerDataSummaryEl.innerHTML = `
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 5px;"><strong>Середня річна T°:</strong> ${data.tavg} °C</li>
+            <li style="margin-bottom: 5px;"><strong>Річні опади:</strong> ${data.pr} мм/день</li>
+            <li style="margin-bottom: 5px;"><strong>Швидкість вітру:</strong> ${data.wind} м/с</li>
+            <li><strong>Сонячна радіація:</strong> ${data.srad} кВт/м²</li>
+          </ul>
+        `;
+        
+        log(`Дані NASA POWER отримано для центроїда (${geoData.lat}, ${geoData.lon}).`);
+
+      }, 1500); // 1.5 секунди затримки
     }
 
     // Емуляція функції, що запускає симуляцію
     function runSimulation() {
-      if (!drawnLayer) {
-        showError('Будь ласка, оберіть ділянку на карті, перш ніж запускати симуляцію.');
+      if (!geoData) {
+        showError('Будь ласка, намалюйте ділянку на карті, перш ніж запускати симуляцію.');
         return;
       }
 
       runSimBtn.disabled = true;
-      runSimBtn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;"></div> Обчислення...';
+      runSimBtn.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div> Обчислення...';
       log('Симуляція запущена...');
 
       // Отримання вхідних параметрів
@@ -1038,6 +985,10 @@
             ecoFactor = 'Високий';
             score += 5;
         }
+        
+        // Врахування площі ділянки (для прикладу, тут вона не використовується, але має бути врахована)
+        // const areaHa = (turf.area(drawnLayer.toGeoJSON()) / 10000).toFixed(2);
+        // yieldFactor = (yieldFactor * areaHa) / 100; // Просто приклад. Для коректної симуляції потрібен повний алгоритм.
 
         const results = {
           yield: yieldFactor.toFixed(0),
@@ -1051,105 +1002,17 @@
         runSimBtn.disabled = false;
         runSimBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="currentColor"/></svg> Запустити симуляцію (1 рік)';
 
-      }, 3000);
+      }, 3000); // 3 секунди затримки
     }
-
-    // --- TUTORIAL FUNCTIONS ---
-    function showTutorial() {
-      document.getElementById('tutorialOverlay').style.display = 'flex';
-      currentTutorialStep = 1;
-      updateTutorialStep();
-    }
-
-    function updateTutorialStep() {
-      // Hide all steps
-      document.querySelectorAll('.tutorial-step').forEach(step => {
-        step.classList.remove('active');
-      });
-      
-      // Show current step
-      document.getElementById(`step${currentTutorialStep}-tutorial`).classList.add('active');
-      
-      // Update indicators
-      document.querySelectorAll('.tutorial-indicator').forEach((indicator, index) => {
-        indicator.classList.toggle('active', index + 1 === currentTutorialStep);
-      });
-      
-      // Update navigation buttons
-      document.getElementById('prevTutorial').style.display = currentTutorialStep > 1 ? 'block' : 'none';
-      document.getElementById('nextTutorial').style.display = currentTutorialStep < totalTutorialSteps ? 'block' : 'none';
-      document.getElementById('skipTutorial').style.display = currentTutorialStep === totalTutorialSteps ? 'block' : 'none';
-    }
-
-    function nextTutorialStep() {
-      if (currentTutorialStep < totalTutorialSteps) {
-        currentTutorialStep++;
-        updateTutorialStep();
-      } else {
-        closeTutorial();
-      }
-    }
-
-    function prevTutorialStep() {
-      if (currentTutorialStep > 1) {
-        currentTutorialStep--;
-        updateTutorialStep();
-      }
-    }
-
-    function closeTutorial() {
-      document.getElementById('tutorialOverlay').style.display = 'none';
-    }
-
+    
     // --- ІНІЦІАЛІЗАЦІЯ ---
     
     window.onload = function() {
-      // Set default date
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 2);
-      
-      datePicker.value = yesterday.toISOString().split('T')[0];
-      datePicker.max = today.toISOString().split('T')[0];
-
       initializeMap();
       setupEventListeners();
-      
-      // Show tutorial on first visit
-      if (!localStorage.getItem('agroverseTutorialShown')) {
-        setTimeout(showTutorial, 1000);
-        localStorage.setItem('agroverseTutorialShown', 'true');
-      }
-      
-      log('Система готова до роботи. Оберіть дату та намалюйте ділянку.');
+      log('Система готова до роботи. Використовуйте інструменти малювання для вибору ділянки.');
     }
 
-    function setupEventListeners() {
-      const irrigationInput = document.getElementById('irrigation');
-      const fertInput = document.getElementById('fert');
-      const resetBtn = document.getElementById('reset');
-
-      // Range input events
-      irrigationInput.addEventListener('input', updateIrrigationValue);
-      fertInput.addEventListener('input', updateFertilizerValue);
-
-      // Action buttons
-      runSimBtn.addEventListener('click', runSimulation);
-      resetBtn.addEventListener('click', resetForm);
-      
-      // Date picker
-      datePicker.addEventListener('change', updateUIState);
-      
-      // Tutorial events
-      document.getElementById('showTutorial').addEventListener('click', showTutorial);
-      document.getElementById('nextTutorial').addEventListener('click', nextTutorialStep);
-      document.getElementById('prevTutorial').addEventListener('click', prevTutorialStep);
-      document.getElementById('skipTutorial').addEventListener('click', closeTutorial);
-      
-      // Initial values display
-      document.getElementById('irrigationOut').textContent = irrigationInput.value;
-      document.getElementById('fertOut').textContent = fertInput.value;
-    }
   </script>
 </body>
 </html>
