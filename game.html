@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroVerse — Ігровий Процес</title>
+    <script src="scripts\scenarios.js"></script>
     <style>
         :root {
             --accent: #2b8cbe;
@@ -24,8 +25,12 @@
             overflow: hidden;
         }
 
-        .game-wrapper {
-            padding: 12px;
+        .page-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px; 
+            gap: 12px;
+            padding: 50px;
+            padding-top: 120px;
             height: calc(100vh - 24px);
             box-sizing: border-box;
         }
@@ -48,6 +53,7 @@
             gap: 15px;
             align-items: center;
             border-right: 1px solid rgba(101, 163, 13, 0.2);
+            z-index: 10;
         }
 
         .icon {
@@ -80,15 +86,6 @@
             padding: 20px;
         }
 
-        .field-line {
-            width: 80%;
-            height: 200px;
-            border-bottom: 3px solid var(--green);
-            border-radius: 50%;
-            position: absolute;
-            bottom: 10%;
-        }
-
         .top-indicators {
             position: absolute;
             top: 20px;
@@ -99,6 +96,7 @@
             background: var(--card);
             padding: 8px 12px;
             border-radius: 10px;
+            z-index: 10;
         }
 
         .indicator {
@@ -107,85 +105,112 @@
             align-items: center;
             gap: 8px;
         }
-        .indicator-icon {
-            font-size: 18px;
-        }
         
         .sun-indicator {
             width: 36px;
             height: 36px;
-        }
-        .sun-indicator svg {
-            width: 100%;
-            height: 100%;
         }
         .sun-indicator svg text {
             font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
             font-weight: 700;
         }
         
-        .right-sidebar {
-            width: 90px;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-left: 1px solid rgba(101, 163, 13, 0.2);
+        .main-goal {
+            text-align: center;
         }
-
-        .goal-text {
+        .main-goal .goal-text {
             color: var(--red);
             font-weight: bold;
-            font-size: 22px;
-            margin-bottom: 10px;
+            font-size: 24px;
             text-transform: uppercase;
+            margin-bottom: 8px;
         }
-
-        .progress-bar {
-            width: 32px;
-            flex-grow: 1;
-            border: 2px solid var(--green);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column-reverse;
-            background: rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            width: 100%;
-            height: 25%;
-            background-color: var(--red);
-            border-radius: 0 0 5px 5px;
-            transition: height 0.5s ease;
+        .main-goal .goal-underline {
+            width: 60px;
+            height: 4px;
+            background-color: var(--green);
+            border-radius: 2px;
+            margin: 0 auto;
         }
         
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: var(--card);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: var(--muted);
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
+        /* ПАНЕЛЬ СЦЕНАРИЕВ ТЕПЕРЬ ОТДЕЛЬНЫЙ БЛОК В СЕТКЕ */
+        .scenario-sidebar {
             display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--bg);
+            border: 2px solid var(--green);
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .back-button:hover {
-            color: #fff;
+        .scenario-sidebar h3 {
+            margin: 0 0 10px 0;
+            text-align: center;
+            color: var(--muted);
+        }
+        .difficulty-button {
+            background: var(--card);
+            border: 1px solid rgba(101, 163, 13, 0.3);
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .difficulty-button:hover {
+            background-color: var(--green);
+            border-color: var(--green);
         }
 
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            visibility: hidden; opacity: 0;
+            transition: visibility 0s 0.3s, opacity 0.3s;
+        }
+        .modal-overlay.visible {
+            visibility: visible; opacity: 1;
+            transition: visibility 0s, opacity 0.3s;
+        }
+        .modal-content {
+            background: var(--bg); padding: 25px; border-radius: 12px;
+            border: 1px solid var(--green); min-width: 400px; max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 { margin: 0; color: var(--yellow); }
+        .close-button {
+            background: none; border: none; color: var(--muted);
+            font-size: 28px; cursor: pointer; line-height: 1;
+        }
+        #scenario-list {
+            list-style: none; padding: 0; margin: 0;
+            max-height: 400px; overflow-y: auto;
+        }
+        #scenario-list li button {
+            display: block; width: 100%; padding: 12px 15px;
+            background: var(--card); margin-bottom: 8px; border-radius: 8px;
+            text-decoration: none; color: #e2e8f0;
+            transition: background-color 0.2s;
+            border: 1px solid transparent; text-align: left;
+            font-size: 15px; cursor: pointer;
+        }
+        #scenario-list li button:hover { background-color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="game-wrapper">
+    <div class="page-wrapper">
+        <!-- КОЛОНКА 1: ИГРОВОЕ ПОЛЕ -->
         <div class="game-container">
             <div class="left-sidebar">
                 <div class="icon">
@@ -203,24 +228,95 @@
                     <svg width="65" height="71" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" fill="#1E1E2E" stroke="black" stroke-width="4" /><circle cx="32" cy="32" r="25" fill="brown" /><rect x="30" y="15" width="4" height="24" fill="black" /><circle cx="32" cy="44" r="3" fill="black" /></svg>
                 </div>
             </div>
-
             <div class="main-content">
                 <div class="top-indicators">
-                    <div class="indicator sun-indicator">
+                     <div class="indicator sun-indicator">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <g stroke="var(--yellow)" stroke-width="2" stroke-linecap="round">
-                                <circle cx="12" cy="12" r="5" fill="var(--yellow)"/>
-                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                            </g>
+                            <g stroke="var(--yellow)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5" fill="var(--yellow)"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></g>
                             <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="8px" fill="#000">%</text>
                         </svg>
                     </div>
                     <div class="indicator"><span class="indicator-icon">🌡️</span> t</div>
                     <div class="indicator"><span class="indicator-icon">💧</span> %</div>
                 </div>
+                <div class="main-goal">
+                    <div class="goal-text">Ціль</div>
+                    <div class="goal-underline"></div>
+                </div>
+            </div>
+        </div>
 
+        <!-- КОЛОНКА 2: ПАНЕЛЬ СЦЕНАРИЕВ -->
+        <div class="scenario-sidebar">
+            <h3>Вибір Сценарію</h3>
+            <button class="difficulty-button" data-difficulty="easy">Легкий</button>
+            <button class="difficulty-button" data-difficulty="medium">Середній</button>
+            <button class="difficulty-button" data-difficulty="hard">Складний</button>
         </div>
     </div>
+    
+    <!-- МОДАЛЬНОЕ ОКНО (остается в конце body) -->
+    <div class="modal-overlay" id="scenario-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="close-button" id="close-modal-btn">&times;</button>
+            </div>
+            <ul id="scenario-list"></ul>
+        </div>
+    </div>
+
+<script>
+    const difficultyButtons = document.querySelectorAll('.difficulty-button');
+    const modal = document.getElementById('scenario-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const scenarioList = document.getElementById('scenario-list');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    function loadScenario(path) {
+        const oldScript = document.getElementById('scenario-script');
+        if (oldScript) {
+            oldScript.remove();
+        }
+        const script = document.createElement('script');
+        script.id = 'scenario-script';
+        script.src = path;
+        document.body.appendChild(script);
+        console.log(`Загрузка сценария: ${path}`);
+        closeModal();
+    }
+
+    function openModal(difficulty) {
+        const difficultyMap = { easy: 'Легкі', medium: 'Середні', hard: 'Складні' };
+        modalTitle.textContent = `Сценарії: ${difficultyMap[difficulty]}`;
+        scenarioList.innerHTML = '';
+        const currentScenarios = SCENARIO_MANIFEST[difficulty] || [];
+        if (currentScenarios.length > 0) {
+            currentScenarios.forEach(fileName => {
+                const scenarioNumber = fileName.split('_').pop().split('.')[0];
+                const displayName = `Сценарій ${scenarioNumber}`;
+                const filePath = `scenario/${difficulty}/${fileName}`;
+                const li = document.createElement('li');
+                li.innerHTML = `<button onclick="loadScenario('${filePath}')">${displayName}</button>`;
+                scenarioList.appendChild(li);
+            });
+        } else {
+            scenarioList.innerHTML = '<li>Для цього рівня складності сценаріїв ще немає.</li>';
+        }
+        modal.classList.add('visible');
+    }
+
+    function closeModal() {
+        modal.classList.remove('visible');
+    }
+
+    difficultyButtons.forEach(button => {
+        button.addEventListener('click', () => openModal(button.dataset.difficulty));
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+</script>
 
 </body>
 </html>
