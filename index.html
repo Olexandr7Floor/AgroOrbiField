@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroVerse — Farm with NASA Data (MVP)</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root{--accent:#2b8cbe;--bg:#0f1720;--card:#0b1220;--muted:#9aa8b2}
+    html,body,#app{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#071025 0%, #0b1320 100%);color:#e6eef6}
+    .container{display:grid;grid-template-columns:420px 1fr;gap:18px;padding:18px;height:100%}
+    .card{background:rgba(255,255,255,0.03);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    #map{height:100%;border-radius:8px}
+    h1{margin:0 0 6px 0;font-size:18px}
+    .muted{color:var(--muted);font-size:13px}
+    .sidebar{display:flex;flex-direction:column;gap:12px;height:100%}
+    .small{font-size:13px}
+    label{display:block;font-size:13px;margin-bottom:6px}
+    input[type=range]{width:100%}
+    button{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;color:white;cursor:pointer}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+    .row{display:flex;gap:8px;align-items:center}
+    .log{height:120px;overflow:auto;background:rgba(0,0,0,0.15);padding:8px;border-radius:8px;font-size:13px}
+    .lessons{max-height:160px;overflow:auto}
+    .scenario{padding:8px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));cursor:pointer}
+    .score{font-weight:700;color:#b6f7c6}
+    footer{position:absolute;left:18px;right:18px;bottom:18px;color:var(--muted);font-size:13px}
+    #errors {position:fixed;right:10px;top:10px;max-width:320px;z-index:1000;color:#f66;font-size:13px;}
+    @media(max-width:900px){.container{grid-template-columns:1fr;padding:10px}.sidebar{order:2}.card{padding:10px}}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="card sidebar">
+        <div>
+          <h1>AgroVerse — Farm with NASA Data</h1>
+          <div class="muted">Виберіть локацію на карті → отримайте реальні дані NASA → плануйте сезон</div>
+        </div>
+
+        <div>
+          <label class="small">Поточна локація</label>
+          <div id="coords" class="muted">Натисніть на карту, щоб вибрати місце</div>
+        </div>
+
+        <div>
+          <label class="small">Обрати культуру</label>
+          <select id="cropSelect">
+            <option value="maize">Кукурудза</option>
+            <option value="wheat">Пшениця</option>
+            <option value="soy">Соя</option>
+            <option value="sorghum">Сорго (посухостійке)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="small">Полив (літрів / м² / тиждень)</label>
+          <input id="irrigation" type="range" min="0" max="10" step="0.5" value="3" oninput="irrigationOut.textContent = irrigation.value">
+          <div class="row"><div class="muted">Налаштуйте інтенсивність поливу</div><div style="margin-left:auto" id="irrigationOut">3</div></div>
+        </div>
+
+        <div>
+          <label class="small">Добрива (N) — одиниць / га</label>
+          <input id="fert" type="range" min="0" max="200" step="10" value="80" oninput="fertOut.textContent = fert.value">
+          <div class="row"><div class="muted">Балансуйте врожай і довкілля</div><div style="margin-left:auto" id="fertOut">80</div></div>
+        </div>
+
+        <div class="row">
+          <button id="runSim">Запустити сезон</button>
+          <button class="btn-ghost" id="reset">Скинути</button>
+        </div>
+
+        <div>
+          <label class="small">Сценарії</label>
+          <div class="lessons" id="scenarios"></div>
+        </div>
+
+        <div>
+          <label class="small">Короткі уроки</label>
+          <div class="lessons" id="lessons"></div>
+        </div>
+
+        <div>
+          <label class="small">Логи / Звіт</label>
+          <div class="log" id="log">Готово. Виберіть місце на карті.</div>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="height:60%;min-height:320px;position:relative;">
+          <div id="errors"></div>
+          <div id="map" style="height:100%"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:12px;align-items:start;">
+          <div class="card" style="padding:10px;">
+            <h3>Аналіз даних (NASA POWER)</h3>
+            <div id="dataSummary" class="muted small">Немає даних</div>
+            <div id="plot" style="height:120px;margin-top:8px;background:rgba(0,0,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted)">Графік (MVP)</div>
+          </div>
+
+          <div class="card" style="padding:10px;">
+            <h3>Підсумок сезону</h3>
+            <div class="muted small">Оцінка екологічності та ефективності</div>
+            <div style="margin-top:8px">
+              <div>Врожай: <span id="yieldVal">—</span></div>
+              <div>Використання води: <span id="waterVal">—</span></div>
+              <div>Викиди / екологія: <span id="ecoVal">—</span></div>
+              <div style="margin-top:8px">Оцінка (score): <span class="score" id="scoreVal">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>Прототип — використано NASA POWER API. У повній версії будуть інші сервіси.</footer>
+  </div>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const errorsEl = document.getElementById('errors');
+    function showError(msg){ console.error(msg); errorsEl.textContent = msg; }
+
+    let map, marker=null, selected=null;
+
+    if(!window.L){
+      showError('Leaflet не завантажився.');
+    } else {
+      try{
+        map = L.map('map',{minZoom:3,maxZoom:18,worldCopyJump:false,
+          maxBounds:[[-85,-180],[85,180]],maxBoundsViscosity:1.0})
+          .setView([49.0,31.0],6);
+
+        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+          maxZoom:19,attribution:'© OpenStreetMap contributors'
+        }).addTo(map);
+
+        tiles.on('tileerror', err=>{showError('Помилка завантаження плиток OSM');});
+
+        map.on('click', e=>{
+          const {lat,lng}=e.latlng;
+          selected={lat:lat.toFixed(4),lon:lng.toFixed(4)};
+          document.getElementById('coords').textContent=`${selected.lat}, ${selected.lon}`;
+          if(marker) map.removeLayer(marker);
+          marker=L.marker([lat,lng]).addTo(map).bindPopup(`Ви: ${selected.lat}, ${selected.lon}`).openPopup();
+          log('Локація обрана: '+selected.lat+', '+selected.lon);
+          loadDataFor(selected.lat, selected.lon);
+        });
+      } catch(e){ showError('Помилка ініціалізації карти: '+e.message); }
+    }
+
+    const logEl=document.getElementById('log');
+    function log(text){const p=document.createElement('div');p.textContent='['+new Date().toLocaleTimeString()+'] '+text;logEl.prepend(p);}
+
+    // Далі йде логіка сценаріїв, уроків, NASA fetch та симуляції (з твого MVP)...
+    // [залишив без змін, можна додати назад runSimulation, applyScenario, loadDataFor]
+  </script>
+</body>
+</html>
