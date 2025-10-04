@@ -38,12 +38,12 @@
       <div class="card sidebar">
         <div>
           <h1>AgroVerse — Farm with NASA Data</h1>
-          <div class="muted">Виберіть локацію на карті → отримайте реальні дані NASA → плануйте сезон</div>
+          <div class="muted">Оберіть країну на карті → отримайте дані NASA → плануйте сезон</div>
         </div>
 
         <div>
-          <label class="small">Поточна локація</label>
-          <div id="coords" class="muted">Натисніть на карту, щоб вибрати місце</div>
+          <label class="small">Обрана країна</label>
+          <div id="coords" class="muted">Натисніть на карту</div>
         </div>
 
         <div>
@@ -59,7 +59,7 @@
         <div>
           <label class="small">Полив (літрів / м² / тиждень)</label>
           <input id="irrigation" type="range" min="0" max="10" step="0.5" value="3" oninput="irrigationOut.textContent = irrigation.value">
-          <div class="row"><div class="muted">Налаштуйте інтенсивність поливу</div><div style="margin-left:auto" id="irrigationOut">3</div></div>
+          <div class="row"><div class="muted">Інтенсивність поливу</div><div style="margin-left:auto" id="irrigationOut">3</div></div>
         </div>
 
         <div>
@@ -85,7 +85,7 @@
 
         <div>
           <label class="small">Логи / Звіт</label>
-          <div class="log" id="log">Готово. Виберіть місце на карті.</div>
+          <div class="log" id="log">Готово. Виберіть країну.</div>
         </div>
       </div>
 
@@ -120,43 +120,55 @@
 
   <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Turf.js для геооперацій -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
   <script>
     const errorsEl = document.getElementById('errors');
-    function showError(msg){ console.error(msg); errorsEl.textContent = msg; }
+    function showError(msg){console.error(msg);errorsEl.textContent = msg;}
 
-    let map, marker=null, selected=null;
+    let map = L.map('map',{
+      minZoom:2,maxZoom:8,worldCopyJump:false,
+      maxBounds:[[-85,-180],[85,180]],maxBoundsViscosity:1.0
+    }).setView([20,0],2);
 
-    if(!window.L){
-      showError('Leaflet не завантажився.');
-    } else {
-      try{
-        map = L.map('map',{minZoom:3,maxZoom:18,worldCopyJump:false,
-          maxBounds:[[-85,-180],[85,180]],maxBoundsViscosity:1.0})
-          .setView([49.0,31.0],6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom:19,attribution:'© OpenStreetMap contributors'
+    }).addTo(map);
 
-        const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-          maxZoom:19,attribution:'© OpenStreetMap contributors'
-        }).addTo(map);
-
-        tiles.on('tileerror', err=>{showError('Помилка завантаження плиток OSM');});
-
-        map.on('click', e=>{
-          const {lat,lng}=e.latlng;
-          selected={lat:lat.toFixed(4),lon:lng.toFixed(4)};
-          document.getElementById('coords').textContent=`${selected.lat}, ${selected.lon}`;
-          if(marker) map.removeLayer(marker);
-          marker=L.marker([lat,lng]).addTo(map).bindPopup(`Ви: ${selected.lat}, ${selected.lon}`).openPopup();
-          log('Локація обрана: '+selected.lat+', '+selected.lon);
-          loadDataFor(selected.lat, selected.lon);
-        });
-      } catch(e){ showError('Помилка ініціалізації карти: '+e.message); }
+    const info = document.getElementById('coords');
+    const logEl = document.getElementById('log');
+    function log(text){
+      const p = document.createElement('div');
+      p.textContent = '[' + new Date().toLocaleTimeString() + '] ' + text;
+      logEl.prepend(p);
     }
 
-    const logEl=document.getElementById('log');
-    function log(text){const p=document.createElement('div');p.textContent='['+new Date().toLocaleTimeString()+'] '+text;logEl.prepend(p);}
+    let geoData = null;
 
-    // Далі йде логіка сценаріїв, уроків, NASA fetch та симуляції (з твого MVP)...
-    // [залишив без змін, можна додати назад runSimulation, applyScenario, loadDataFor]
+    fetch("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson")
+      .then(r => r.json())
+      .then(data => {
+        geoData = data;
+        L.geoJSON(data,{style:{color:"#3388ff",weight:1,fillOpacity:0.05}}).addTo(map);
+      });
+
+      map.on("click", e => {
+  if(!geoData) return;
+
+  const clickedFeature = geoData.features.find(f => 
+    turf.booleanPointInPolygon([e.latlng.lng, e.latlng.lat], f)
+  );
+
+  if(clickedFeature){
+    const name = clickedFeature.properties?.ADMIN || clickedFeature.properties?.name || "Невідомо";
+    info.textContent = "🌍 " + name;
+    log("Обрана країна: " + name);
+  } else {
+    info.textContent = "Океан або невизначена зона";
+  }
+});
+
   </script>
 </body>
 </html>
