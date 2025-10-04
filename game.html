@@ -7,10 +7,10 @@
     <style>
         :root {
             --accent: #2b8cbe;
-            --bg: #1e293b; /* Слегка измененный фон как на скриншоте */
+            --bg: #1e293b; 
             --card: #0f172a;
             --muted: #94a3b8;
-            --green: #65a30d; /* Более приглушенный зеленый */
+            --green: #65a30d;
             --red: #dc2626;
             --yellow: #facc15;
         }
@@ -41,7 +41,6 @@
             box-sizing: border-box;
         }
 
-        /* --- Левая панель --- */
         .left-sidebar {
             padding: 20px 15px;
             display: flex;
@@ -72,7 +71,6 @@
             height: 28px;
         }
 
-        /* --- Центральная область --- */
         .main-content {
             flex-grow: 1;
             position: relative;
@@ -91,7 +89,6 @@
             bottom: 10%;
         }
 
-        /* --- Верхние индикаторы --- */
         .top-indicators {
             position: absolute;
             top: 20px;
@@ -113,22 +110,20 @@
         .indicator-icon {
             font-size: 18px;
         }
-
-        .yellow-circle {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--yellow);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--yellow);
-            font-weight: bold;
-            font-size: 14px;
-            background-color: rgba(250, 204, 21, 0.1);
+        
+        .sun-indicator {
+            width: 36px;
+            height: 36px;
+        }
+        .sun-indicator svg {
+            width: 100%;
+            height: 100%;
+        }
+        .sun-indicator svg text {
+            font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+            font-weight: 700;
         }
         
-        /* --- Правая панель --- */
         .right-sidebar {
             width: 90px;
             padding: 20px 15px;
@@ -165,7 +160,6 @@
             transition: height 0.5s ease;
         }
         
-        /* Кнопка "Назад" */
         .back-button {
             position: absolute;
             top: 20px;
@@ -212,18 +206,18 @@
 
             <div class="main-content">
                 <div class="top-indicators">
-                    <div class="indicator yellow-circle">%</div>
+                    <div class="indicator sun-indicator">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="var(--yellow)" stroke-width="2" stroke-linecap="round">
+                                <circle cx="12" cy="12" r="5" fill="var(--yellow)"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </g>
+                            <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="8px" fill="#000">%</text>
+                        </svg>
+                    </div>
                     <div class="indicator"><span class="indicator-icon">🌡️</span> t</div>
                     <div class="indicator"><span class="indicator-icon">💧</span> %</div>
                 </div>
-            </div>
-
-            <div class="right-sidebar">
-                <div class="goal-text">Ціль</div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
 
         </div>
     </div>
