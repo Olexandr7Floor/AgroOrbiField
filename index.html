@@ -33,6 +33,8 @@
         --shadow: 0 8px 32px rgba(2, 6, 23, 0.4);
         --radius: 12px;
         --transition: all 0.3s ease;
+        --gren: #9fef00;
+        --gren-hover: #b2f233;
     }
     
     * {
@@ -122,21 +124,22 @@
     }
     
     .game-button {
+        margin-top: 55px;
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 6px;
-        background-color: var(--bg-card-light); 
-        color: var(--secondary);
+        background-color: var(--gren); 
+        color: #000000;
         padding: 8px 12px;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 16px;
         text-decoration: none;
         border: 1px solid var(--border);
         transition: var(--transition);
     }
     .game-button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: var(--secondary-light);
+        background-color: var(--gren-hover);
     }
     
     /* Form Elements */
@@ -514,13 +517,6 @@
             <h1 class="app-title">AgroVerse</h1>
             <div class="app-subtitle">Farm Navigators — Місія GIS</div>
           </div>
-          <!-- Placeholder for the game link -->
-          <a href="game.html" class="game-button" title="Game feature is under development">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-            </svg>
-            Game (MVP)
-          </a>
         </div>
         
         <div class="data-panel">
@@ -583,7 +579,15 @@
                 </div>
             </div>
         </div>
+         <a href="game.html" class="game-button" title="Game feature is under development">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+            </svg>
+            Game (MVP)
+          </a>
       </div>
+
+ 
 
       <!-- Right Panel - Map and Data Grid -->
       <div style="display: flex; flex-direction: column; height: 100%; width: 100%;">
