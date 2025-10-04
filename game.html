@@ -14,6 +14,7 @@
             --green: #65a30d;
             --red: #dc2626;
             --yellow: #facc15;
+            --red-dark: #8B0000;
         }
 
         html, body {
@@ -23,6 +24,12 @@
             background: var(--card);
             color: #e2e8f0;
             overflow: hidden;
+        }
+        .top-left-controls {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            z-index: 100;
         }
 
         .page-wrapper {
@@ -133,7 +140,6 @@
             margin: 0 auto;
         }
         
-        /* ПАНЕЛЬ СЦЕНАРИЕВ ТЕПЕРЬ ОТДЕЛЬНЫЙ БЛОК В СЕТКЕ */
         .scenario-sidebar {
             display: flex;
             flex-direction: column;
@@ -164,6 +170,24 @@
         .difficulty-button:hover {
             background-color: var(--green);
             border-color: var(--green);
+        }
+
+        .back-button {
+            background: var(--red);
+            border: 1px solid rgba(220, 38, 38, 0.5);
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.2s, border-color 0.2s;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: var(--red-dark);
+            border-color: var(--red-dark);
         }
 
         .modal-overlay {
@@ -208,9 +232,10 @@
     </style>
 </head>
 <body>
-
+    <div class="top-left-controls">
+        <a href="index.html" class="back-button">Головна сторінка</a>
+    </div>
     <div class="page-wrapper">
-        <!-- КОЛОНКА 1: ИГРОВОЕ ПОЛЕ -->
         <div class="game-container">
             <div class="left-sidebar">
                 <div class="icon">
@@ -246,7 +271,6 @@
             </div>
         </div>
 
-        <!-- КОЛОНКА 2: ПАНЕЛЬ СЦЕНАРИЕВ -->
         <div class="scenario-sidebar">
             <h3>Вибір Сценарію</h3>
             <button class="difficulty-button" data-difficulty="easy">Легкий</button>
@@ -255,7 +279,6 @@
         </div>
     </div>
     
-    <!-- МОДАЛЬНОЕ ОКНО (остается в конце body) -->
     <div class="modal-overlay" id="scenario-modal">
         <div class="modal-content">
             <div class="modal-header">
