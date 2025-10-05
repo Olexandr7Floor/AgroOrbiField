@@ -40,6 +40,22 @@
             padding: 40px;
             box-sizing: border-box;
         }
+        .center-content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            gap: 30px; /* Увеличил расстояние между грядками и колбой */
+            padding-top: 60px; /* Отступ сверху от индикаторов */
+            box-sizing: border-box;
+        }
+        
+        .farm-grid-container {
+            flex-grow: 1;
+            height: 90%;
+            max-width: 80%;
+        }
 
         #farm-grid {
             width: 100%;
@@ -47,23 +63,75 @@
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             grid-template-rows: repeat(8, 1fr);
-            gap: 6px;
+            gap: 8px; /* Немного увеличил расстояние */
         }
 
         .farm-plot {
-            background-color: rgba(233, 250, 0, 0.2);
-            border-radius: 4px;
-            border: 1px solid rgba(149, 255, 0, 0.15);
+            background-color: #4a553a; /* Цвет как на скриншоте */
+            border-radius: 8px; /* Более скругленные углы */
+            border: 1px solid rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s;
         }
 
         .farm-plot:hover {
-            background-color: rgba(149, 255, 0, 0.3);
+            background-color: #5f6f4b;
             transform: scale(1.05);
             z-index: 5;
-            border-color: rgba(101, 163, 13, 0.4);
         }
+        
+        /* --- НОВЫЕ СТИЛИ ДЛЯ ШКАЛЫ-КОЛБЫ --- */
+        .flask-progress-container {
+            height: 90%; /* Такая же высота как у грядок */
+            width: 60px; /* Ширина колбы */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .flask-progress-bar {
+            width: 100%;
+            flex-grow: 1;
+            border: 3px solid var(--green);
+            border-radius: 0 0 30px 30px; /* Закругленное дно колбы */
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden; /* Скрываем все, что выходит за пределы */
+        }
+        
+        .flask-progress-fill {
+            width: 100%;
+            background: linear-gradient(to top, var(--green), var(--yellow));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 0; /* Начальное значение */
+            border-radius: 0 0 27px 27px; /* Радиус чуть меньше, чем у родителя */
+            transition: height 0.5s ease-out;
+        }
+        
+        .flask-marker {
+            position: absolute;
+            bottom: 70%; /* Точное положение на 70% */
+            left: -10px;
+            right: -10px;
+            height: 2px;
+            background-color: var(--red);
+            z-index: 2;
+        }
+
+        .flask-marker::after {
+            content: '70%';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            padding-left: 8px;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
         .page-wrapper {
             display: grid;
             grid-template-columns: 1fr 300px; 
@@ -270,7 +338,17 @@
                     <div class="indicator"><span class="indicator-icon">🌡️</span> t</div>
                     <div class="indicator"><span class="indicator-icon">💧</span> %</div>
                 </div>
-                <div id="farm-grid"></div>
+                <div class="center-content-wrapper">
+                    <div class="farm-grid-container">
+                        <div id="farm-grid"></div>
+                    </div>
+                    <div class="flask-progress-container">
+                        <div class="flask-progress-bar">
+                            <div class="flask-progress-fill" id="progress-fill"></div>
+                            <div class="flask-marker"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -293,6 +371,12 @@
     </div>
 
 <script>
+    function updateProgressBar(percentage) {
+        const fillElement = document.getElementById('progress-fill');
+        if (!fillElement) return;
+        const clampedPercentage = Math.max(0, Math.min(100, percentage));
+        fillElement.style.height = `${clampedPercentage}%`;
+    }
     document.addEventListener('DOMContentLoaded', () => {
         const farmGrid = document.getElementById('farm-grid');
         if (!farmGrid) return;
@@ -305,6 +389,7 @@
             plot.dataset.plotId = i;
             farmGrid.appendChild(plot);
         }
+        <!-- updateProgressBar(45);  -->
     });
 
     const difficultyButtons = document.querySelectorAll('.difficulty-button');
