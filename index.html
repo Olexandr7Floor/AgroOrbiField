@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AgroVerse — NASA POWER Farm Simulator</title>
+  <title>AgroOrbiField — NASA POWER Farm Simulator</title>
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
@@ -14,7 +14,7 @@
 
 
   <style>
-    /* CSS Styles (Dark Theme from main.css) */
+    /* CSS Styles (Dark Theme from main.css) - NO CHANGES HERE */
     :root {
         --primary: #2b8cbe; /* Blue */
         --primary-dark: #1a6a9c;
@@ -46,13 +46,13 @@
         /* Dark blue gradient background */
         background: linear-gradient(135deg, #071025 0%, #0f1720 100%);
         color: var(--text-primary);
-        overflow: hidden; /* Important for 100vh container */
+        overflow: auto; 
     }
 
     #app {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        min-height: 100vh;
     }
 
     .container {
@@ -61,10 +61,9 @@
         gap: 8px;
         padding: 8px;
         width: 100%;
-        height: calc(100vh - 16px);
-        margin: 0;
+        height: auto; 
         flex-grow: 1;
-        overflow: hidden;
+        overflow: visible;
     }
     
     .card {
@@ -74,14 +73,12 @@
         padding: 20px;
         box-shadow: var(--shadow);
         border: 1px solid var(--border);
-        /* Card height in sidebar: */
         height: auto; 
         overflow-y: auto;
     }
 
-    /* FIX: This was an issue! Set min-height, and actual height is set by Flexbox. */
     #map {
-        min-height: 300px; /* Reduced minimum height to free up space */
+        min-height: 300px;
         border-radius: 12px;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
@@ -94,11 +91,9 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
-        max-height: 100vh;
         overflow-y: auto;
     }
     
-    /* Header & Title */
     .header-container {
       display: flex;
       justify-content: space-between;
@@ -110,7 +105,6 @@
       margin: 0;
       font-size: 24px;
       font-weight: 700;
-      /* Gradient text effect */
       background: linear-gradient(90deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -122,43 +116,22 @@
       margin-top: 4px;
     }
     
-    /* MODIFIED: Original game-button style is kept, but a new prominent style is added */
-    .game-button-header {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background-color: var(--bg-card-light); 
-        color: var(--secondary);
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 14px;
-        text-decoration: none;
-        border: 1px solid var(--border);
-        transition: var(--transition);
-    }
-    .game-button-header:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: var(--secondary-light);
-    }
-    
-    /* NEW PROMINENT GAME BUTTON STYLE */
     .game-button-footer {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        /* Using secondary (lime green) for high visibility */
         background: linear-gradient(90deg, var(--secondary), var(--secondary-light));
-        color: var(--bg-dark); /* Dark text on light background */
-        padding: 15px 20px; /* Much larger padding */
+        color: var(--bg-dark);
+        padding: 15px 20px;
         border-radius: 10px;
-        font-size: 18px; /* Larger font */
+        font-size: 18px;
         font-weight: 700;
         text-decoration: none;
         border: none;
-        box-shadow: 0 4px 20px rgba(203, 226, 43, 0.4); /* Strong shadow */
+        box-shadow: 0 4px 20px rgba(203, 226, 43, 0.4);
         transition: var(--transition);
-        width: 100%; /* Full width */
+        width: 100%;
     }
 
     .game-button-footer:hover {
@@ -168,9 +141,8 @@
     }
 
     .game-button-footer svg {
-        fill: var(--bg-dark); /* Ensure icon color matches text */
+        fill: var(--bg-dark);
     }
-    /* Form Elements & Buttons (Unchanged) */
     .form-group label {
         display: block;
         font-size: 14px;
@@ -227,7 +199,6 @@
         color: var(--text-muted);
     }
     
-    /* Buttons */
     .btn-group {
         display: flex;
         gap: 12px;
@@ -265,12 +236,10 @@
         transform: translateY(1px);
     }
 
-    /* Data Grid & Results */
     .data-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 0;
-        /* FIX: Reduce min-height so the footer isn't pushed out on small screens */
         min-height: 180px; 
     }
     .data-panel {
@@ -337,50 +306,77 @@
         -webkit-text-fill-color: transparent;
         font-size: 28px;
     }
-    /* --- СТИЛІ ДЛЯ LEAFLET CONTROL LAYERS --- */
+
+/* СТИЛІ LEAFLET CONTROL LAYERS */
 .leaflet-control-layers {
-    /* Використовуємо темний фон, як для карток */
     background-color: var(--bg-card) !important; 
     backdrop-filter: blur(5px);
     border: 1px solid var(--border) !important;
-    border-radius: var(--radius) !important; /* 12px */
+    border-radius: var(--radius) !important;
     box-shadow: var(--shadow);
     padding: 10px;
-    color: var(--text-primary); /* Основний колір тексту */
+    color: var(--text-primary);
     font-size: 14px;
+    position: relative; 
 }
 
-/* Стилі для контейнера з розширеними шарами */
+/* СТИЛІ ДЛЯ КНОПКИ ЗГОРТАННЯ/РОЗГОРТАННЯ ШАРІВ */
+#toggleLayersButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: var(--bg-card-light);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 18px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+#toggleLayersButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.leaflet-control-layers-list.hidden {
+    display: none;
+}
+/* Кінець СТИЛІВ ДЛЯ КНОПКИ ЗГОРТАННЯ/РОЗГОРТАННЯ ШАРІВ */
+
+
 .leaflet-control-layers-expanded {
     padding: 10px 15px 10px 10px !important;
     white-space: nowrap;
 }
 
-/* Стиль для лінії роздільника між базовими шарами та оверлеями */
 .leaflet-control-layers-separator {
     margin: 8px 0;
     border-top: 1px solid var(--border) !important;
 }
 
-/* Стилі для підписів шарів */
 .leaflet-control-layers label {
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    color: var(--text-secondary); /* Трохи приглушений текст */
+    color: var(--text-secondary);
     padding: 2px 0;
     transition: color 0.2s;
 }
 
 .leaflet-control-layers label:hover {
-    color: var(--text-primary); /* Яскравіший текст при наведенні */
+    color: var(--text-primary);
 }
 
-/* Стилі для радіокнопок та чекбоксів (можна покращити вигляд) */
 .leaflet-control-layers input[type="radio"],
 .leaflet-control-layers input[type="checkbox"] {
-    /* Змінюємо стандартний вигляд, щоб відповідав темній темі */
     appearance: none;
     width: 16px;
     height: 16px;
@@ -388,17 +384,15 @@
     border-radius: 3px;
     background-color: var(--bg-dark);
     transition: all 0.2s;
-    margin-right: 0; /* Вирівнюємо відступ, оскільки він уже є у label gap */
-    flex-shrink: 0; /* Не дозволяємо стискатися */
+    margin-right: 0;
+    flex-shrink: 0;
 }
 
-/* Стиль для відміченого чекбокса/радіокнопки */
 .leaflet-control-layers input:checked {
-    background-color: var(--primary); /* Синій колір, як у вашій темі */
+    background-color: var(--primary);
     border-color: var(--primary);
 }
 
-/* Стиль для галочки всередині чекбокса */
 .leaflet-control-layers input[type="checkbox"]:checked::before {
     content: '✔';
     display: block;
@@ -407,31 +401,7 @@
     line-height: 14px;
     text-align: center;
 }
-    /* Log */
-    .log-container {
-        margin-top: 20px;
-        min-height: 120px;
-    }
-    .log {
-        background-color: var(--bg-dark);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 10px;
-        max-height: 150px;
-        overflow-y: auto;
-        font-size: 12px;
-    }
-    .log-entry {
-        padding: 4px 0;
-        border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
-        color: var(--text-secondary);
-    }
-    .log-time {
-        font-weight: 500;
-        color: var(--primary);
-    }
     
-    /* Errors */
     #errors {
         display: none;
         position: absolute;
@@ -445,20 +415,18 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
-    /* Footer */
     footer {
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
       padding: 12px 0;
       border-top: 1px solid var(--border);
-      position: absolute;
-      bottom: 0;
+      position: relative;
       width: 100%;
       background: var(--bg-card);
+      z-index: 50;
     }
     
-    /* Map Elements */
     .leaflet-container {
         cursor: crosshair;
     }
@@ -473,10 +441,9 @@
         background-color: var(--primary-dark) !important;
     }
     
-    /* Map Info Panel */
     #infoPanel {
         position: absolute;
-        bottom: 10px; /* Shift up to not overlap mapControls/helpButton */
+        bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
         background-color: var(--bg-card);
@@ -489,35 +456,41 @@
         font-size: 14px;
         min-width: 250px;
         text-align: center;
-        /* Set a higher bottom to avoid overlapping other elements placed at bottom: 10px */
         bottom: 50px; 
     }
     .hidden { display: none; }
 
-    /* Help Button (UPDATED: position) */
+    /* ЗМІНА 1: Кнопка Map Help зроблена більш помітною та переміщена у лівий нижній кут */
     #helpButton {
         position: absolute;
-        bottom: 25px; 
-        right: 10px;
-        z-index: 15;
-        padding: 8px 12px;
-        background: var(--bg-card);
-        color: var(--secondary);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-weight: 600;
+        bottom: 10px; 
+        left: 10px; /* Переміщено в лівий нижній кут */
+        z-index: 20; /* Вищий Z-index */
+        padding: 12px 22px; /* Більший розмір */
+        /* Яскравий, контрастний градієнт */
+        background: linear-gradient(90deg, #ff9900, #ff6600); 
+        color: white; 
+        border: 2px solid #ffaa00; 
+        border-radius: 10px;
+        font-size: 16px; 
+        font-weight: 800; 
         cursor: pointer;
         transition: var(--transition);
+        /* Інтенсивніша тінь */
+        box-shadow: 0 6px 20px rgba(255, 102, 0, 0.6); 
     }
     #helpButton:hover {
-        background: rgba(43, 140, 190, 0.2);
+        background: linear-gradient(90deg, #ff6600, #ff9900);
+        box-shadow: 0 8px 25px rgba(255, 102, 0, 0.8);
+        transform: translateY(-2px);
     }
     
-    /* Controls Container (UPDATED: position) */
+    /* ЗМІНА 2: Переміщення Map Controls у правий нижній кут, щоб не перекривати кнопку Help */
     #mapControls {
       position: absolute;
       bottom: 10px; 
-      left: 10px;
+      right: 10px; /* Переміщено в правий нижній кут */
+      left: auto; /* Скасовує попередню властивість left */
       z-index: 15;
       background: var(--bg-card);
       padding: 10px;
@@ -559,7 +532,7 @@
     }
 
 
-    /* Modal Styling */
+    /* Стилі для модального вікна допомоги */
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -570,7 +543,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 100;
+        z-index: 1000;
         visibility: hidden;
         opacity: 0;
         transition: visibility 0s, opacity 0.3s;
@@ -620,15 +593,13 @@
         color: var(--danger);
     }
 
-
-    /* Responsive design */
     @media (max-width: 1100px) {
         .container {
             grid-template-columns: 1fr;
             grid-template-rows: auto 1fr;
             gap: 8px;
             padding: 8px;
-            height: calc(100vh - 16px);
+            height: auto;
         }
         
         .sidebar {
@@ -641,10 +612,6 @@
             grid-template-columns: 1fr;
             gap: 0;
         }
-        
-        footer {
-            position: relative;
-        }
     }
   </style>
 </head>
@@ -655,7 +622,7 @@
       <div class="card sidebar">
         <div class="header-container">
           <div>
-            <h1 class="app-title">AgroVerse</h1>
+            <h1 class="app-title">AgroOrbiField</h1>
             <div class="app-subtitle">Farm Navigators — GIS Mission</div>
           </div>
           <a href="quiz.html" class="btn btn-ghost" style="
@@ -740,15 +707,6 @@
           </button>
         </div>
         
-        <div class="log-container">
-            <label>Activity Log</label>
-            <div class="log" id="log">
-                <div class="log-entry">
-                    <span class="log-time">[Init]</span> Waiting for field selection on the map.
-                </div>
-            </div>
-        </div>
-        
         <div>
           <a href="game.html" class="game-button-footer" title="Game feature is under development">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -780,8 +738,8 @@
 
           <div id="errors"></div>
         </div>
-
-        <div class="data-grid"> 
+        
+        <div class="data-grid" style="padding-top: 8px;"> 
           <div class="card" style="border-bottom: 1px solid var(--border);">
             <div class="card-header">
               <h3 class="card-title">Weather Forecast / NASA POWER Data</h3>
@@ -821,33 +779,32 @@
   </div>
 
   <div id="helpModal" class="modal-overlay">
-      <div class="modal-content">
-          <span class="modal-close">&times;</span>
-          <h3>How to Use GIS Tools</h3>
-          <p>To run the simulation, you need to **draw** the boundaries of your agricultural field on the map using the Leaflet Draw tools.</p>
-          <ol>
-              <li>
-                  <strong>Select the Drawing Tool:</strong> In the map toolbar (usually top left), click the **polygon** icon (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 17H7V7H17V17ZM12 4.5L14.5 9.5H9.5L12 4.5Z" fill="currentColor"/></svg>).
-              </li>
-              <li>
-                  <strong>Draw the Field:</strong> Click on the map to set the corners of your field. To complete the polygon, click on the starting point.
-              </li>
-              <li>
-                  <strong>Check Data:</strong> After drawing is complete, the field **Area** will appear below the map, and the **centroid** (middle point) coordinates will update in the sidebar.
-              </li>
-              <li>
-                  <strong>Editing:</strong> If you need to change the shape, click the **edit** icon (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="currentColor"/></svg>) on the toolbar.
-              </li>
-              <li>
-                  <strong>Change Layer Date:</strong> Use the **Layer Date** selector (usually bottom left of the map) to change the date of satellite layers (NDVI, LST, True Color). This is important for viewing data from a specific time.
-              </li>
-              <li>
-                  <strong>Run Simulation:</strong> Once the field is drawn and parameters (Crop, Irrigation, Fertilizer) are selected, the **"Run Simulation"** button will become active.
-              </li>
-          </ol>
-      </div>
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h3>How to Use AgroOrbiField (GIS Tools)</h3>
+      <p>To run the simulation, you need to draw the boundaries of your agricultural field on the map using the Leaflet Draw tools.</p>
+      <ol>
+          <li>
+              <strong>Select the Tool:</strong> In the map toolbar (usually top left), click the polygon icon (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 17H7V7H17V17ZM12 4.5L14.5 9.5H9.5L12 4.5Z" fill="currentColor"/></svg>).
+          </li>
+          <li>
+              <strong>Draw the Field:</strong> Click on the map to set the corners of your field. To complete the polygon, click on the starting point.
+          </li>
+          <li>
+              <strong>Get Data:</strong> After drawing is complete, the Area of the field will appear, and the centroid middle point) coordinates will update in the sidebar. The system will automatically check the surface type and start loading NASA POWER meteorological data for this point.
+          </li>
+          <li>
+              <strong>Editing:</strong> If you need to change the shape, click the edit icon (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25ZM20.71 7.04C21.1 6.65 21.1 6.02 20.71 5.63L18.37 3.29C17.98 2.9 17.35 2.9 16.96 3.29L15.13 5.12L18.88 8.87L20.71 7.04Z" fill="currentColor"/></svg>) on the toolbar.
+          </li>
+          <li>
+              <strong>Layer Management:</strong> You can turn map layers on/off (NDVI, Surface Temperature, etc.) and manage their date and opacity using the controls in the bottom right corner of the map. You can also collapse the layer list by clicking the small "▲" button in the layers window.
+          </li>
+          <li>
+              <strong>Run Simulation:</strong> Once the field is drawn, NASA POWER data is loaded, and you set the parameters (Crop, Irrigation, Fertilizer), the "Run Simulation" button will become active.
+          </li>
+      </ol>
   </div>
-
+  </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
@@ -856,9 +813,10 @@
   <script>
     // --- GLOBAL VARIABLES ---
     let map;
-    let drawnItems; // Stores layers drawn by the user
-    let drawnLayer = null; // Current drawn polygon (Field)
-    let geoData = null; // Stores centroid of the selected field (Lat/Lon)
+    let drawnItems;
+    let drawnLayer = null;
+    let geoData = null;
+    let nasaPowerData = null;
     
     const errorsEl = document.getElementById('errors');
     const runSimBtn = document.getElementById('runSim');
@@ -867,23 +825,25 @@
     const infoPanel = document.getElementById('infoPanel');
     
     // --- LAYER CONSTANTS ---
-    // NASA GIBS WMTS (EPSG:3857/best)
-    const LAYER_TRUECOLOR = 'MODIS_Terra_CorrectedReflectance_TrueColor'; // jpg, Level9
-    const LAYER_LST_DAY   = 'MODIS_Terra_Land_Surface_Temp_Day';         // png, Level7
-
-    // NOAA NDVI ImageServer
+    const LAYER_TRUECOLOR = 'MODIS_Terra_CorrectedReflectance_TrueColor';
+    const LAYER_LST_DAY   = 'MODIS_Terra_Land_Surface_Temp_Day';
     const NDVI_IMAGE_URL = 'https://gis.nnvl.noaa.gov/arcgis/rest/services/NDVI/NDVI_weekly/ImageServer';
-    
-    // Copernicus CLMS WMTS endpoint (official):
-    const CLMS_WMTS_CAPS = 'https://globalland.vito.be/wmts?request=GetCapabilities&service=WMTS';
-    const SWI_LAYER_ID_HINTS = ['swi_12.5km_v3_daily', 'swi_12_5km_v3_daily', 'swi_12.5km_v2_daily', 'swi_daily'];
     
     let gibsDate;
     let ndviMaxDate = null;
-    let swi; // SWI Layer
+    let swi; 
 
-    // --- HELPER FUNCTIONS ---
-    
+    // --- CROP PARAMETERS FOR SIMULATION ---
+    const cropParameters = {
+      maize: { baseYield: 15000, optTemp: { min: 18, max: 32 }, waterNeed: 600, growingSeason: [4, 5, 6, 7, 8, 9] }, // April-Sept
+      wheat: { baseYield: 10000, optTemp: { min: 15, max: 25 }, waterNeed: 500, growingSeason: [3, 4, 5, 6, 7] }, // March-July
+      soy: { baseYield: 6000, optTemp: { min: 20, max: 30 }, waterNeed: 550, growingSeason: [5, 6, 7, 8, 9] }, // May-Sept
+      // Default fallback
+      default: { baseYield: 8000, optTemp: { min: 15, max: 30 }, waterNeed: 500, growingSeason: [4, 5, 6, 7, 8] }
+    };
+
+    // ВИДАЛЕНО: Функцію log
+
     function showError(msg) {
       console.error(msg);
       errorsEl.textContent = msg;
@@ -893,54 +853,32 @@
       }, 5000);
     }
     
-    function log(text) {
-      const logEl = document.getElementById('log');
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      const time = new Date().toLocaleTimeString('en-US'); // Changed locale to US for English context
-      entry.innerHTML = `<span class="log-time">[${time}]</span> ${text}`;
-      logEl.prepend(entry);
-      
-      if (logEl.children.length > 10) {
-        logEl.removeChild(logEl.lastChild);
-      }
-    }
-    
-    // Update irrigation values
-    function updateIrrigationValue(e) {
-      document.getElementById('irrigationOut').textContent = e.target.value;
-      log(`Irrigation value changed to: ${e.target.value} mm/day`);
-    }
-
-    // Update fertilizer values
-    function updateFertilizerValue(e) {
-      document.getElementById('fertOut').textContent = e.target.value;
-      log(`Fertilizer value changed to: ${e.target.value} kg/ha`);
-    }
-    
-    // Set simulation results
     function displaySimulationResults(results) {
       document.getElementById('yieldVal').textContent = `${results.yield} kg/ha`;
       document.getElementById('waterVal').textContent = `${results.water} m³`;
       document.getElementById('ecoVal').textContent = results.eco;
       document.getElementById('scoreVal').textContent = results.score;
-      log('Simulation successfully completed. Results updated.');
+      // ВИДАЛЕНО: log('Simulation successfully completed. Results updated.');
     }
 
-    // Date utilities
     const pad = n => String(n).padStart(2,'0');
     const toDateStr = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
 
-    // Reset form to initial state
+    function updateIrrigationValue(e) {
+      document.getElementById('irrigationOut').textContent = e.target.value;
+    }
+
+    function updateFertilizerValue(e) {
+      document.getElementById('fertOut').textContent = e.target.value;
+    }
+    
     function resetForm() {
-      // Reset parameters
       document.getElementById('irrigation').value = 3;
       document.getElementById('irrigationOut').textContent = '3.0';
       document.getElementById('fert').value = 80;
       document.getElementById('fertOut').textContent = '80';
       document.getElementById('cropSelect').value = 'maize';
       
-      // Reset UI
       coordsEl.textContent = 'Draw a field on the map';
       powerDataSummaryEl.innerHTML = 'Draw a field to see data.';
       document.getElementById('yieldVal').textContent = '—';
@@ -950,63 +888,38 @@
       infoPanel.classList.add('hidden');
       infoPanel.innerHTML = '';
       
-      // Reset map
       geoData = null;
+      nasaPowerData = null;
       runSimBtn.disabled = true;
-      if (drawnLayer) {
-        drawnItems.removeLayer(drawnLayer);
-        drawnLayer = null;
-      }
+      if (drawnLayer) { drawnItems.removeLayer(drawnLayer); drawnLayer = null; }
       
-      // Reset date to today
       const today = new Date();
       document.getElementById('datePicker').value = toDateStr(today);
       gibsDate = toDateStr(today);
       setAllDates(gibsDate);
-
-      log('Parameters reset to initial values');
+      // ВИДАЛЕНО: log('Parameters reset to initial values');
     }
     
-    // --- LAYER LOGIC ---
-    
-    // Utility to create a NASA GIBS WMTS layer
+    // --- LAYER LOGIC (Unchanged) ---
     function gibsLayer(layerId, dateStr, options = {}) {
-      const fmt = options.format || 'jpg';
-      const tms = options.tms || 'GoogleMapsCompatible_Level9';
-      const opacity = options.opacity ?? 0.7;
-      const subdomains = options.subdomains || ['a','b','c'];
-      // Use httpS:
+      const fmt = options.format || 'jpg'; const tms = options.tms || 'GoogleMapsCompatible_Level9';
+      const opacity = options.opacity ?? 0.7; const subdomains = options.subdomains || ['a','b','c'];
       const url = `https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/${layerId}/default/${dateStr}/${tms}/{z}/{y}/{x}.${fmt}`;
-      return L.tileLayer(url, { subdomains, opacity, crossOrigin: true, maxNativeZoom: 8 }); // maxNativeZoom: 8 for GIBS
+      return L.tileLayer(url, { subdomains, opacity, crossOrigin: true, maxNativeZoom: 8 });
     }
-    
-    // Update URL and filters for all time-based layers
     function setAllDates(dateStr) {
-      // True Color & LST
       trueColor.setUrl(`https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/${LAYER_TRUECOLOR}/default/${dateStr}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`);
       lstDay.setUrl   (`https://gibs-{s}.earthdata.nasa.gov/wmts/epsg3857/best/${LAYER_LST_DAY  }/default/${dateStr}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png`);
-
-      // NDVI (ImageServer): time filter
       const from = new Date(dateStr); const to = new Date(dateStr);
-      // setTimeRange works for L.esri.imageMapLayer
       if (ndvi.setTimeRange) ndvi.setTimeRange(from, to); 
-      // SWI (WMTS) shows the latest data — date change is not applied.
-      log(`Layer date updated to ${dateStr}`);
     }
-    
-    // Clamps the date to the maximum available for NDVI
     function clampDateToNDVIRange() {
       if (!ndviMaxDate) return;
       const pick = document.getElementById('datePicker').value;
-      if (pick > ndviMaxDate) {
-        document.getElementById('datePicker').value = ndviMaxDate; // update UI
-        log(`Date changed to the latest available for NDVI: ${ndviMaxDate}`);
-      }
+      if (pick > ndviMaxDate) { document.getElementById('datePicker').value = ndviMaxDate; }
       gibsDate = document.getElementById('datePicker').value;
       setAllDates(gibsDate);
     }
-    
-    // Set opacity for all overlay layers
     function setOverlayOpacity(v) {
       const val = parseFloat(v);
       ndvi.setOpacity(val);
@@ -1014,376 +927,220 @@
       lstDay.setOpacity(val);
       document.getElementById('opacityVal').textContent = Math.round(val * 100) + '%';
     }
-    
-    // Function to find the SWI layer
-    let swiTemplateTried = false;
-    function tryCreateSWIWithKnownTemplate(){
-      const candidate = 'https://globalland.vito.be/wmts/swi_12.5km_v3_daily/default/GoogleMapsCompatible/{z}/{y}/{x}.png';
-      const test = L.tileLayer(candidate, { opacity: 0.7, crossOrigin: true, errorTileUrl: '' });
-      // Add error handler to prevent issues if the layer is unavailable
-      let errors = 0;
-      test.on('tileerror', () => { errors++; if (errors > 4) { if (map.hasLayer(test)) map.removeLayer(test); } });
-      test.on('load', () => { swi = test; });
-      swiTemplateTried = true;
-      return test;
-    }
-    
-    async function autoDiscoverSWIfromWMTS(layersControl){
-      try {
-        const res = await fetch(CLMS_WMTS_CAPS);
-        const xmlText = await res.text();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, 'application/xml');
-        const layers = Array.from(xml.getElementsByTagName('Layer'));
-        
-        let foundLayer = null;
-        for (const lyr of layers){
-          const id = lyr.getElementsByTagName('Identifier')[0]?.textContent?.toLowerCase() || '';
-          const hitHint = SWI_LAYER_ID_HINTS.some(h=> id.includes(h));
-          if (hitHint){ foundLayer = lyr; break; }
-        }
-        if (!foundLayer) return;
-
-        const resUrls = Array.from(foundLayer.getElementsByTagName('ResourceURL'));
-        const tileRes = resUrls.find(n=> (n.getAttribute('resourceType')||'').toLowerCase()==='tile');
-        let template = tileRes?.getAttribute('template');
-        if (template){
-          template = template
-            .replace('{TileMatrixSet}', 'GoogleMapsCompatible')
-            .replace('{Style}', 'default')
-            .replace('{style}', 'default')
-            .replace('{StyleName}', 'default');
-          const layer = L.tileLayer(template
-              .replace('{TileMatrix}', '{z}')
-              .replace('{TileRow}', '{y}')
-              .replace('{TileCol}', '{x}')
-            , { opacity: 0.7, crossOrigin: true });
-          swi = layer;
-
-          log('SWI layer successfully added via auto-discovery.');
-        }
-      } catch(e){ console.error('SWI WMTS auto-discovery failed', e); }
-    }
-
 
     // --- MAP AND GIS LOGIC ---
-    
-    // Global variables for layers
     let osm, esriSat, ndvi, trueColor, lstDay;
-    
-    // Initialize Leaflet map and drawing tools
     function initializeMap() {
-      // 1. Set initial date
       const today = new Date();
       document.getElementById('datePicker').value = toDateStr(today);
       gibsDate = toDateStr(today);
+      map = L.map('map', { minZoom: 2, worldCopyJump: false, maxBounds: [[-85, -180], [85, 180]], maxBoundsViscosity: 1.0 }).setView([48.3794, 31.1656], 4);
+      osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OSM' });
+      esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' }).addTo(map);
+      ndvi = L.esri.imageMapLayer({ url: NDVI_IMAGE_URL, opacity: 0.7, attribution: 'NOAA', format: 'png32', transparent: true }).addTo(map);
+      trueColor = gibsLayer(LAYER_TRUECOLOR, gibsDate, { format: 'jpg', opacity: 1.0 });
+      lstDay    = gibsLayer(LAYER_LST_DAY,   gibsDate, { format: 'png', opacity: 0.7 });
+      const baseLayers = { 'Satellite (Esri)': esriSat, 'Street (OSM)': osm, 'Satellite (NASA)': trueColor };
+      const overlayLayers = { 'Vegetation (NDVI)': ndvi, 'Surface Temp (LST)': lstDay };
       
-      // 2. Initialize map
-      map = L.map('map', {
-        minZoom: 2,
-        worldCopyJump: false,
-        maxBounds: [[-85, -180], [85, 180]],
-        maxBoundsViscosity: 1.0
-      }).setView([48.3794, 31.1656],4); // Center of Ukraine, slightly more zoom for start
-      
-      // 3. Base Layers
-      osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' });
-      esriSat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri, Maxar, Earthstar Geographics' }).addTo(map);
+      const layerControl = L.control.layers(baseLayers, overlayLayers, { collapsed: false }).addTo(map);
 
-      // 4. Overlay Layers
-      ndvi = L.esri.imageMapLayer({ url: NDVI_IMAGE_URL, opacity: 0.7, attribution: 'NOAA NNVL — Weekly Smoothed NDVI', format: 'png32', transparent: true }).addTo(map);
-      trueColor = gibsLayer(LAYER_TRUECOLOR, gibsDate, { format: 'jpg', opacity: 1.0, tms: 'GoogleMapsCompatible_Level9' });
-      lstDay    = gibsLayer(LAYER_LST_DAY,   gibsDate, { format: 'png', opacity: 0.7, tms: 'GoogleMapsCompatible_Level7' });
+      // Додавання кнопки згортання/розгортання шарів
+      const layerControlContainer = layerControl.getContainer();
+      const listElement = layerControlContainer.querySelector('.leaflet-control-layers-list');
+      const button = document.createElement('button');
+      button.id = 'toggleLayersButton';
+      button.innerHTML = '▲'; 
+      layerControlContainer.prepend(button);
       
-      // 5. Layer Control
-      const baseLayers = {
-        'Satellite Imagery (Esri World Imagery)': esriSat,
-        'Street (OSM)': osm,
-        'Satellite Imagery (NASA GIBS True Color)': trueColor
-      };
-      const overlayLayers = {
-        'Vegetation Index (NDVI)': ndvi,
-        'Surface Temperature (Day, LST)': lstDay
-      };
-      const layersControl = L.control.layers(baseLayers, overlayLayers, { collapsed: false }).addTo(map);
-      
-      // 7. Auto-discovery of max NDVI date and application of initial date
-      fetch(NDVI_IMAGE_URL + '?f=json')
-        .then(r => r.json())
-        .then(info => {
-          if (info && info.timeInfo && Array.isArray(info.timeInfo.timeExtent)) {
-            const endMs = info.timeInfo.timeExtent[1];
-            if (endMs) {
-              ndviMaxDate = toDateStr(new Date(endMs));
-              clampDateToNDVIRange();
-            }
-          }
-        })
-        .catch(() => {});
-      
-      // 8. Default opacity settings
+      button.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        const isHidden = listElement.classList.toggle('hidden');
+        button.innerHTML = isHidden ? '▼' : '▲';
+      });
+
+      fetch(NDVI_IMAGE_URL + '?f=json').then(r => r.json()).then(info => { if (info?.timeInfo?.timeExtent) { const endMs = info.timeInfo.timeExtent[1]; if (endMs) { ndviMaxDate = toDateStr(new Date(endMs)); clampDateToNDVIRange(); } } }).catch(() => {});
       setOverlayOpacity(document.getElementById('opacity').value);
-      
-      // 9. Setup Leaflet Draw (for drawing the field)
       drawnItems = new L.FeatureGroup();
       map.addLayer(drawnItems);
-      
-      const drawControl = new L.Control.Draw({
-        edit: { featureGroup: drawnItems, poly: { allowIntersection: false } },
-        draw: {
-            polygon: {
-                shapeOptions: { color: '#cbe22b' },
-                allowIntersection: false,
-                showArea: true
-            },
-            polyline: false, circle: false, rectangle: false, marker: false, circlemarker: false
-        }
-      });
+      const drawControl = new L.Control.Draw({ edit: { featureGroup: drawnItems }, draw: { polygon: { shapeOptions: { color: '#cbe22b' }, showArea: true }, polyline: false, circle: false, rectangle: false, marker: false, circlemarker: false } });
       map.addControl(drawControl);
-
-      // 10. Leaflet Draw Event Handlers
-      map.on(L.Draw.Event.CREATED, (e) => {
-          if (drawnLayer) drawnItems.removeLayer(drawnLayer);
-          drawnLayer = e.layer;
-          drawnItems.addLayer(drawnLayer);
-          updateUIState();
-      });
-
-      map.on(L.Draw.Event.EDITED, (e) => {
-          e.layers.eachLayer((layer) => { drawnLayer = layer; });
-          updateUIState();
-      });
-
-      map.on(L.Draw.Event.DELETED, () => {
-          drawnLayer = null;
-          updateUIState();
-      });
-      
+      map.on(L.Draw.Event.CREATED, (e) => { if (drawnLayer) drawnItems.removeLayer(drawnLayer); drawnLayer = e.layer; drawnItems.addLayer(drawnLayer); updateUIState(); });
+      map.on(L.Draw.Event.EDITED, (e) => { e.layers.eachLayer((layer) => { drawnLayer = layer; }); updateUIState(); });
+      map.on(L.Draw.Event.DELETED, () => { drawnLayer = null; updateUIState(); });
+      // ВИДАЛЕНО: log('System ready. Please draw a field on land to begin.');
     }
     
-    // Updates UI after drawing/editing the field
     function updateUIState() {
         if (!drawnLayer) {
-            geoData = null;
-            runSimBtn.disabled = true;
+            geoData = null; nasaPowerData = null; runSimBtn.disabled = true;
             coordsEl.textContent = 'Draw a field on the map';
+            powerDataSummaryEl.innerHTML = 'Draw a field to see data.';
             infoPanel.classList.add('hidden');
-            log('Field deleted. Please draw a new one.');
+            // ВИДАЛЕНО: log('Field deleted. Please draw a new one.');
             return;
         }
-
         try {
             const polygon = drawnLayer.toGeoJSON();
             const centroid = turf.centroid(polygon);
             const lat = centroid.geometry.coordinates[1].toFixed(4);
             const lon = centroid.geometry.coordinates[0].toFixed(4);
             geoData = { lat, lon };
-            
-            const areaM2 = turf.area(polygon);
-            const areaHa = (areaM2 / 10000).toFixed(2);
-
+            const areaHa = (turf.area(polygon) / 10000).toFixed(2);
             coordsEl.innerHTML = `<strong>Centroid:</strong> Lat: ${lat}, Lon: ${lon}`;
-            infoPanel.innerHTML = `<strong>Area:</strong> ${areaHa} hectares<br><strong>Centroid:</strong> (${lat}, ${lon})`;
+            infoPanel.innerHTML = `<strong>Area:</strong> ${areaHa} ha`;
             infoPanel.classList.remove('hidden');
-            runSimBtn.disabled = false;
-            
-            log(`Field updated. Area: ${areaHa} ha. Centroid used for NASA data.`);
-            
-            fetchNasaPowerData();
-
+            // ВИДАЛЕНО: log(`Field updated. Area: ${areaHa} ha. Starting data checks...`);
+            checkSurfaceAndGetData(lat, lon);
         } catch(e) {
-            showError(`GIS Error: Failed to calculate centroid or area. ${e.message}`);
-            runSimBtn.disabled = true;
-            geoData = null;
+            showError(`GIS Error: ${e.message}`);
+            runSimBtn.disabled = true; geoData = null;
         }
     }
 
-
-    // Setup all event listeners
     function setupEventListeners() {
-      const irrigationInput = document.getElementById('irrigation');
-      const fertInput = document.getElementById('fert');
-      const runSimBtn = document.getElementById('runSim');
-      const resetBtn = document.getElementById('reset');
-      
-      const helpButton = document.getElementById('helpButton');
+      document.getElementById('irrigation').addEventListener('input', updateIrrigationValue);
+      document.getElementById('fert').addEventListener('input', updateFertilizerValue);
+      document.getElementById('runSim').addEventListener('click', runSimulation);
+      document.getElementById('reset').addEventListener('click', resetForm);
+      document.getElementById('datePicker').addEventListener('change', () => { gibsDate = this.value; clampDateToNDVIRange(); });
+      document.getElementById('opacity').addEventListener('input', (e) => setOverlayOpacity(e.target.value));
       const helpModal = document.getElementById('helpModal');
-      const modalClose = document.querySelector('.modal-close');
-      
-      // Handlers for Map Controls
-      const datePicker = document.getElementById('datePicker');
-      const opacityRange = document.getElementById('opacity');
-      
-      datePicker.addEventListener('change', () => { gibsDate = datePicker.value; clampDateToNDVIRange(); });
-      opacityRange.addEventListener('input', (e) => setOverlayOpacity(e.target.value));
-
-
-      // Range input events
-      irrigationInput.addEventListener('input', updateIrrigationValue);
-      fertInput.addEventListener('input', updateFertilizerValue);
-
-      // Action buttons
-      runSimBtn.addEventListener('click', runSimulation);
-      resetBtn.addEventListener('click', resetForm);
-      
-      // Help Modal events
-      helpButton.addEventListener('click', () => { helpModal.classList.add('active'); });
-      modalClose.addEventListener('click', () => { helpModal.classList.remove('active'); });
-      helpModal.addEventListener('click', (e) => { 
-          if (e.target.id === 'helpModal') { 
-              helpModal.classList.remove('active'); 
-          } 
-      });
-
-      // Initial values display
-      document.getElementById('irrigationOut').textContent = irrigationInput.value;
-      document.getElementById('fertOut').textContent = fertInput.value;
-      
+      document.getElementById('helpButton').addEventListener('click', () => { helpModal.classList.add('active'); });
+      document.querySelector('.modal-close').addEventListener('click', () => { helpModal.classList.remove('active'); });
+      helpModal.addEventListener('click', (e) => { if (e.target.id === 'helpModal') { helpModal.classList.remove('active'); } });
+      updateIrrigationValue({target: document.getElementById('irrigation')});
+      updateFertilizerValue({target: document.getElementById('fert')});
     }
 
+    async function checkSurfaceAndGetData(lat, lon) {
+      runSimBtn.disabled = true;
+      powerDataSummaryEl.innerHTML = 'Checking surface type...';
+      try {
+        const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+        const data = await response.json();
 
-    // --- NASA POWER API & SIMULATION LOGIC ---
+        const locality = data.locality || '';
+        const isWater = locality.includes('Ocean') || locality.includes('Sea') || locality.includes('Gulf') || locality.includes('Bay') || !data.principalSubdivision;
 
-    // Emulation of function retrieving data from NASA POWER API
-    function fetchNasaPowerData() {
-      if (!geoData) {
-        powerDataSummaryEl.innerHTML = 'Draw a field to see data.';
-        return;
+        if (isWater) {
+          showError("Simulation is not possible. The selected area is in water.");
+          // ВИДАЛЕНО: log(`Check failed: selected area is water (${locality}).`);
+          powerDataSummaryEl.innerHTML = '<span style="color: var(--danger);">Area is in water. Please select a land area.</span>';
+          nasaPowerData = null;
+        } else {
+          // ВИДАЛЕНО: log(`Surface check successful: It's land (${data.principalSubdivision}).`);
+          await fetchNasaPowerData(lat, lon);
+        }
+      } catch (e) {
+        showError("Could not verify surface type. Please try again.");
+        console.error("BigDataCloud API error:", e);
+        powerDataSummaryEl.innerHTML = 'Could not verify surface type.';
+        nasaPowerData = null;
       }
+    }
+    
+    async function fetchNasaPowerData(lat, lon) {
+      powerDataSummaryEl.innerHTML = 'Loading real data from NASA POWER...';
+      const year = new Date().getFullYear() - 1;
+      const parameters = "T2M_MAX,T2M_MIN,PRECTOTCORR,ALLSKY_SFC_SW_DWN";
+      const url = `https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=${parameters}&community=AG&longitude=${lon}&latitude=${lat}&start=${year}&end=${year}&format=JSON`;
 
-      powerDataSummaryEl.innerHTML = 'Loading data... <span style="color: var(--secondary);">(Emulation)</span>';
-      
-      // Emulate network delay
-      setTimeout(() => {
-        // Emulate retrieved weather data
-        const data = {
-          tavg: (20 + Math.random() * 5).toFixed(1), // Average temperature
-          pr: (3 + Math.random() * 2).toFixed(1), // Precipitation
-          wind: (4 + Math.random() * 3).toFixed(1), // Wind speed
-          srad: (15 + Math.random() * 5).toFixed(1) // Solar radiation
-        };
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`API responded with status ${response.status}`);
+        const data = await response.json();
+        nasaPowerData = data.properties.parameter;
+        
+        const avgTemp = Object.values(nasaPowerData.T2M_MIN).reduce((sum, val, i) => sum + (val + Object.values(nasaPowerData.T2M_MAX)[i]) / 2, 0) / 12;
+        const totalPrecip = Object.values(nasaPowerData.PRECTOTCORR).reduce((sum, val) => sum + val, 0); // Total mm/year
+        const avgRadiation = Object.values(nasaPowerData.ALLSKY_SFC_SW_DWN).reduce((sum, val) => sum + val, 0) / 12;
 
         powerDataSummaryEl.innerHTML = `
           <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 5px;"><strong>Average Annual T°:</strong> ${data.tavg} °C</li>
-            <li style="margin-bottom: 5px;"><strong>Annual Precipitation:</strong> ${data.pr} mm/day</li>
-            <li style="margin-bottom: 5px;"><strong>Wind Speed:</strong> ${data.wind} m/s</li>
-            <li><strong>Solar Radiation:</strong> ${data.srad} kW/m²</li>
-          </ul>
-        `;
-        
-        log(`NASA POWER data received for centroid (${geoData.lat}, ${geoData.lon}).`);
-
-      }, 1500); // 1.5 second delay
+            <li style="margin-bottom: 5px;"><strong>Annual Avg T°:</strong> ${avgTemp.toFixed(1)} °C</li>
+            <li style="margin-bottom: 5px;"><strong>Total Annual Precip:</strong> ${totalPrecip.toFixed(0)} mm</li>
+            <li><strong>Avg Daily Solar Rad:</strong> ${avgRadiation.toFixed(1)} kW-hr/m²/day</li>
+          </ul>`;
+        // ВИДАЛЕНО: log(`NASA POWER data for ${year} received.`);
+        runSimBtn.disabled = false;
+      } catch (e) {
+          showError(`Failed to get data from NASA POWER. ${e.message}`);
+          powerDataSummaryEl.innerHTML = '<span style="color: var(--danger);">Error loading NASA data.</span>';
+          nasaPowerData = null;
+      }
     }
-
-    // Emulation of function running the simulation
+    
     function runSimulation() {
-      if (!geoData) {
-        showError('Please draw a field on the map before running the simulation.');
+      if (!geoData || !nasaPowerData) {
+        showError('Please draw a field on land and wait for NASA data to load.');
         return;
       }
 
       runSimBtn.disabled = true;
-      // Changed to a simpler indicator as spinner-border is not defined in this CSS
       runSimBtn.innerHTML = 'Calculating...'; 
-      log('Simulation started...');
+      // ВИДАЛЕНО: log('Simulation started with real data...');
 
-      // Get input parameters
-      const crop = document.getElementById('cropSelect').value;
+      const cropId = document.getElementById('cropSelect').value;
       const irrigation = parseFloat(document.getElementById('irrigation').value);
-      const fert = parseFloat(document.getElementById('fert').value);
+      const fertilizer = parseFloat(document.getElementById('fert').value);
       
-      // Emulate simulation calculation delay
+      const params = cropParameters[cropId] || cropParameters.default;
+      const year = new Date().getFullYear() - 1;
+
+      // 1. Temperature Factor
+      let tempPenalty = 0;
+      params.growingSeason.forEach(monthIndex => {
+        const monthKey = `${year}${String(monthIndex).padStart(2, '0')}`;
+        const avgT = (nasaPowerData.T2M_MIN[monthKey] + nasaPowerData.T2M_MAX[monthKey]) / 2;
+        if (avgT < params.optTemp.min) tempPenalty += (params.optTemp.min - avgT) * 0.05;
+        if (avgT > params.optTemp.max) tempPenalty += (avgT - params.optTemp.max) * 0.05;
+      });
+      const tempFactor = Math.max(0.1, 1 - (tempPenalty / params.growingSeason.length));
+
+      // 2. Water Factor
+      let totalPrecip = 0;
+      params.growingSeason.forEach(monthIndex => {
+        const monthKey = `${year}${String(monthIndex).padStart(2, '0')}`;
+        totalPrecip += nasaPowerData.PRECTOTCORR[monthKey];
+      });
+      const totalIrrigation = irrigation * 30.4 * params.growingSeason.length;
+      const waterFactor = Math.min(1.2, (totalPrecip + totalIrrigation) / params.waterNeed);
+
+      // 3. Fertilizer Factor
+      let fertFactor = 0.5 + (1.2 - 0.5) * (1 - Math.exp(-0.025 * fertilizer));
+      if (fertilizer > 180) fertFactor *= 0.9;
+
+      const limitingFactor = Math.min(tempFactor, waterFactor);
+      const finalYield = params.baseYield * limitingFactor * fertFactor;
+
+      let eco = 'High';
+      let score = 80;
+      if (fertilizer > 150) { eco = 'Low (Fertilizer Overdose)'; score -= 20; }
+      if (irrigation > 8) { eco = 'Fair (High Water Use)'; score -= 10; }
+      if (limitingFactor < 0.7) score -= 15;
+      score *= (0.5 + limitingFactor / 2);
+
       setTimeout(() => {
-        // Emulate complex simulation algorithm
-        let yieldFactor = 4500; // Base yield (approx maize/wheat in kg/ha)
-        let waterFactor = 200; // Base water usage (m³)
-        let ecoFactor = 'Medium';
-        let score = 75;
-
-        // Adjustments based on input parameters and crop type
-        if (crop === 'maize') {
-          // yieldFactor starts at 4500, suitable for maize
-          yieldFactor += irrigation * 100 + fert * 5;
-          waterFactor += irrigation * 50;
-        } else if (crop === 'wheat') {
-          // yieldFactor starts at 4500, suitable for wheat
-          yieldFactor += irrigation * 70 + fert * 7;
-          waterFactor += irrigation * 30;
-        } else if (crop === 'soy') {
-            yieldFactor = 3500; // Adjust base for soy
-            yieldFactor += irrigation * 80 + fert * 4;
-            waterFactor += irrigation * 20; // Lower water
-        } else if (crop === 'sorghum') {
-            yieldFactor = 5000; // Adjust base for sorghum (drought resistant)
-            yieldFactor += irrigation * 90 + fert * 3;
-            waterFactor += irrigation * 15; // Lowest water
-        } else if (crop === 'barley') {
-            yieldFactor = 4000; // Adjust base for barley
-            yieldFactor += irrigation * 60 + fert * 6;
-            waterFactor += irrigation * 25;
-        } else if (crop === 'sunflower') {
-            yieldFactor = 3000; // Adjust base for sunflower (lower yield)
-            yieldFactor += irrigation * 50 + fert * 8;
-            waterFactor += irrigation * 40;
-        } else if (crop === 'sugarbeet') {
-            yieldFactor = 70000; // High base for sugar beet (by weight)
-            waterFactor = 800; // High base water usage
-            yieldFactor += irrigation * 150 + fert * 12;
-            waterFactor += irrigation * 80;
-        } else if (crop === 'rapeseed') {
-            yieldFactor = 3500; // Adjust base for rapeseed
-            yieldFactor += irrigation * 40 + fert * 10;
-            waterFactor += irrigation * 35;
-        } else if (crop === 'rice') {
-            yieldFactor = 8000; // Adjust base for rice
-            waterFactor = 1000; // Very high base water usage
-            yieldFactor += irrigation * 120 + fert * 8;
-            waterFactor += irrigation * 150;
-        } else if (crop === 'potato') {
-            yieldFactor = 35000; // High base for potato (by weight)
-            waterFactor = 500; // High base water usage
-            yieldFactor += irrigation * 130 + fert * 10;
-            waterFactor += irrigation * 60;
-        }
-
-        // Scoring logic
-        if (fert > 150) {
-            ecoFactor = 'Low (Fertilizer Overdose)';
-            score -= 10;
-        } else if (irrigation > 8) {
-            waterFactor += 200;
-            ecoFactor = 'Fair (High Water Consumption)';
-            score -= 5;
-        } else {
-            ecoFactor = 'High';
-            score += 5;
-        }
-        
-        const results = {
-          yield: yieldFactor.toFixed(0),
-          water: waterFactor.toFixed(0),
-          eco: ecoFactor,
-          score: Math.min(100, Math.max(50, score)).toFixed(0) + '/100'
-        };
-
-        displaySimulationResults(results);
-        
-        runSimBtn.disabled = false;
-        runSimBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="currentColor"/></svg> Run Simulation (1 Year)';
-
-      }, 3000); // 3 second delay
+          const results = {
+              yield: finalYield.toFixed(0),
+              water: ((totalIrrigation / 1000) * 10000).toFixed(0),
+              eco: eco,
+              score: Math.min(99, Math.max(30, score)).toFixed(0) + '/100'
+          };
+          displaySimulationResults(results);
+          runSimBtn.disabled = false;
+          runSimBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 5V19L19 12L8 5Z" fill="currentColor"/></svg> Run Simulation (1 Year)';
+      }, 1500);
     }
     
     // --- INITIALIZATION ---
-    
     window.onload = function() {
       initializeMap();
       setupEventListeners();
-      log('System ready. Satellite and thematic layers added.');
     }
-
   </script>
 </body>
 </html>
