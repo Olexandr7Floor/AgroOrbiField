@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASA Farm Navigator: Scenario Selection</title>
+    <title>NASA Farm Navigator: Visualized Simulation</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* ==================== 1. CORE DARK MODE STYLES ==================== */
@@ -107,7 +107,7 @@
             background: #d43125;
         }
 
-        /* ==================== 2. GAME UI STYLES (FROM PREVIOUS STEP) ==================== */
+        /* ==================== 2. GAME UI STYLES ==================== */
         .controls-panel {
             background-color: #222;
             padding: 20px 10px;
@@ -150,14 +150,15 @@
         .field-area {
             position: relative;
             background-color: #384236; 
-            background-image: url('https://via.placeholder.com/1000x800/2A482E/384236?text=CROP+FIELD+VIEW'); 
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background-image 0.7s ease-in-out; /* Smooth image transition */
         }
         .mini-panel {
             position: absolute;
@@ -361,22 +362,22 @@
 <body>
 
 <button id="back-to-main-btn" onclick="window.location.href='index.html';">
-    <i class="material-icons" style="font-size: 1.2em; vertical-align: middle; margin-right: 5px;">arrow_back</i>Back to Main Page
+    <i class="material-icons" style="font-size: 1.2em; vertical-align: middle; margin-right: 5px;">arrow_back</i>Back to Main
 </button>
 
 <div id="start-screen">
     <h1>NASA Farm Navigator</h1>
-    <p style="color: #ccc; margin-bottom: 30px;">Select the simulation scenario to begin your mission.</p>
+    <p style="color: #ccc; margin-bottom: 30px;">Select a simulation scenario to start your mission.</p>
     
     <div class="scenario-card" onclick="selectScenario('georgia_maize');">
-        <h3>Scenario 1: South Georgia Maize Crisis (2025)</h3>
-        <p style="font-size: 0.9em; color: #a0a0a0;">**Focus:** Decision-making using remote sensing data (NDVI, ESI) across planting, replanting, and harvest stages.</p>
+        <h3>Scenario 1: South Georgia Corn Crisis (2025)</h3>
+        <p style="font-size: 0.9em; color: #a0a0a0;">Focus: Decision-making based on remote sensing data (NDVI, ESI) during planting, replanting, and harvest stages.</p>
         <button class="start-btn">Start Simulation</button>
     </div>
     
     <div class="scenario-card" style="opacity: 0.5; cursor: default;">
         <h3>Scenario 2: Coming Soon...</h3>
-        <p style="font-size: 0.9em; color: #666;">Future challenge: Drought mitigation in the US Midwest Wheat Belt.</p>
+        <p style="font-size: 0.9em; color: #666;">Upcoming Challenge: Mitigating drought impact in the Midwest Wheat Belt.</p>
     </div>
 </div>
 
@@ -385,18 +386,18 @@
         <p style="color:#4285F4; font-weight:bold; margin-bottom:20px; font-size: 1.2em;">NASA TOOLS</p>
         <div class="icon-btn active" id="btn-info" data-action="info"><i class="material-icons">data_usage</i><br>Data Analysis</div>
         <div class="icon-btn" id="btn-crop" data-action="crop"><i class="material-icons">nature</i><br>Crop Selection</div>
-        <div class="icon-btn" id="btn-fertilizer" data-action="fertilizer"><i class="material-icons">grain</i><br>Fertilizer</div>
-        <div class="icon-btn" id="btn-irrigation" data-action="irrigation"><i class="material-icons">water_drop</i><br>Water/Chem</div>
+        <div class="icon-btn" id="btn-fertilizer" data-action="fertilizer"><i class="material-icons">grain</i><br>Fertilizers</div>
+        <div class="icon-btn" id="btn-irrigation" data-action="irrigation"><i class="material-icons">water_drop</i><br>Irrigation/Chemicals</div>
         <div class="icon-btn" id="btn-planting_date" data-action="planting_date"><i class="material-icons">calendar_today</i><br>Planting Date</div>
         <div class="icon-btn" id="btn-replant" data-action="replant"><i class="material-icons">refresh</i><br>Replant Decision</div>
-        <div class="icon-btn" id="btn-harvest_date" data-action="harvest_date"><i class="material-icons">local_florist</i><br>Harvest Timing</div>
+        <div class="icon-btn" id="btn-harvest_date" data-action="harvest_date"><i class="material-icons">local_florist</i><br>Harvest Time</div>
     </div>
 
-    <div class="field-area">
+    <div class="field-area" id="field-area">
         <div class="mini-panel">
             <div class="stat-item">☀️ T: <span id="stat-temp">--</span>°C</div>
             <div class="stat-item">💧 W: <span id="stat-water">--</span> % Vol.</div>
-            <div class="stat-item">🌿 NDVI $\Delta$: <span id="stat-ndvi">--</span>%</div>
+            <div class="stat-item">🌿 NDVI Delta: <span id="stat-ndvi">--</span>%</div>
         </div>
         <div class="field-action" id="field-area-clickable">
             <p id="field-message">Step 1: Press **Data Analysis** to begin.</p>
@@ -412,8 +413,8 @@
         <div class="step-indicators" id="step-indicators">
             </div>
         <div class="current-step-info">
-            <h3>Step <span id="current-step-number">1</span>: <span id="current-step-title">Select Crop</span></h3>
-            <p id="current-step-task">Required Action: **CROP SELECTION**</p>
+            <h3>Step <span id="current-step-number">1</span>: <span id="current-step-title">Crop Selection</span></h3>
+            <p id="current-step-task">Action Required: **CROP SELECTION**</p>
         </div>
     </div>
 </div>
@@ -427,10 +428,10 @@
         <div id="modal-action-options" style="margin-top:20px; display:none;">
             </div>
 
-        <p style="margin-top: 25px; font-size: 1.1em;">**Your Critical Task:** <span id="modal-task-text" style="color:#FFC107; font-weight: bold;"></span></p>
+        <p style="margin-top: 25px; font-size: 1.1em;">Your Critical Task: <span id="modal-task-text" style="color:#FFC107; font-weight: bold;"></span></p>
 
-        <button class="action-button" id="modal-confirm-btn">Analyze Complete. Proceed to Action.</button>
-        <button class="action-button" id="modal-close-btn" style="display:none; background-color:#3367D6;">Close Report and Proceed</button>
+        <button class="action-button" id="modal-confirm-btn">Analysis Complete. Proceed to Action.</button>
+        <button class="action-button" id="modal-close-btn" style="display:none; background-color:#3367D6;">Close Report and Continue</button>
     </div>
 </div>
 
@@ -443,106 +444,117 @@
     const SCENARIO_DATA = {
         'georgia_maize': [
             {
-                id: 1, title: "Select Crop", phase: "Planning", 
-                timeWindow: "August 2024 (Pre-Season)", 
+                id: 1, title: "Crop Selection", phase: "Pre-Season Planning", 
+                timeWindow: "August 2024", 
                 stats: { temp: 28, water: 25, ndvi: 0 }, 
-                task: "Based on climate and economic stability, which crop offers the best risk/reward for South Georgia?",
+                task: "Based on climate and economic stability, which crop offers the best risk/reward ratio for South Georgia?",
                 data: [
-                    { type: 'text', name: "Economic Outlook: Risk vs. Reward", desc: "Cotton and Peanuts have high government subsidies but high input costs and market volatility. Corn is stable.", img: null },
-                    { type: 'graph', name: "Regional Climate Index", desc: "The region is projected for a mild, wet spring, favoring full-season crops like Corn.", img: 'ClimateIndex_250x150.png' }
+                    { type: 'text', name: "Economic Forecast: Risk vs. Reward", desc: "Cotton and Peanut have high government subsidies but high resource costs and market volatility. Maize is stable.", img: null },
+                    { type: 'graph', name: "Regional Climate Index", desc: "A mild, wet spring is projected, favoring full-season crops like Corn.", img: 'ClimateIndex_250x150.png' }
                 ],
                 actionType: 'crop', 
-                options: [{ id: 'Cotton', label: 'Cotton', score: 60 }, { id: 'Maize', label: 'Corn (Maize)', score: 100 }, { id: 'Peanut', label: 'Peanuts', score: 70 }],
+                options: [{ id: 'Cotton', label: 'Cotton', score: 60 }, { id: 'Maize', label: 'Maize (Corn)', score: 100 }, { id: 'Peanut', label: 'Peanut', score: 70 }],
                 correct: 'Maize',
-                report: "Excellent! **Corn (Maize)**, despite needing high water, offers the best blend of high yield potential and market stability compared to the volatile Cotton/Peanut markets."
+                report: "Excellent! **Maize (Corn)**, despite being water-intensive, offers the best blend of high yield potential and market stability compared to volatile Cotton/Peanut markets."
             },
             {
                 id: 2, title: "When to Plant?", phase: "Planting Window",
                 timeWindow: "March 15 - May 10",
                 stats: { temp: 13, water: 19, ndvi: 0 }, 
-                task: "Using soil T data, select the week that meets the T $\\ge 13^\circ \\text{C}$ threshold consistently for uniform emergence.",
+                task: "Using soil temperature data, select the week that consistently meets the T >= 13 deg C threshold for uniform emergence.",
                 data: [
-                    { type: 'graph', name: "AGMET: 2-inch Soil Temperature", desc: "The soil T is volatile in March. It reaches the 13°C threshold temporarily in mid-April, but is most stable/safe in late April.", img: 'SoilTemp_250x150.png' },
-                    { type: 'text', name: "Yield vs. Date Curve", desc: "Planting too early (March) risks replant. Planting after May 1st guarantees yield loss.", img: null }
+                    { type: 'graph', name: "AGMET: Soil Temperature at 2 inches", desc: "Soil temperatures are highly variable in March. It briefly hits the 13 deg C threshold in mid-April but is most stable/safe in late April.", img: 'SoilTemp_250x150.png' },
+                    { type: 'text', name: "Yield Curve vs. Date", desc: "Planting too early (March) risks replanting. Planting after May 1 guarantees yield loss.", img: null }
                 ],
                 actionType: 'planting_date', 
-                options: [{ id: 'Mar15-22', label: 'Mid-March (High Risk)', score: 30 }, { id: 'May10-17', label: 'Mid-May (Too Late)', score: 60 }, { id: 'Apr25-May02', label: 'Late-April (Optimal Stability)', score: 100 }],
+                options: [{ id: 'Mar15-22', label: 'Mid-March (High Risk)', score: 30 }, { id: 'May10-17', label: 'Mid-May (Too Late)', score: 60 }, { id: 'Apr25-May02', label: 'Late April (Optimal Stability)', score: 100 }],
                 correct: 'Apr25-May02',
-                report: "Perfect! **Late-April** provides the necessary stability ($\ge 13^\circ \text{C}$) to ensure uniform emergence, outweighing the minor yield advantage of planting during the volatile Mid-April window."
+                report: "Perfect! **Late April** provides the necessary stability (>= 13 deg C) for uniform emergence, overriding the small yield benefit of planting during the volatile mid-April window."
             },
             {
                 id: 3, title: "Starter Fertilizer Strategy", phase: "Emergence", 
                 timeWindow: "April 28 - May 10", 
                 stats: { temp: 16, water: 19, ndvi: 5 }, 
-                task: "Select the most efficient starter fertilizer strategy, considering cold soil P-immobility.", 
+                task: "Choose the most efficient starter fertilizer strategy considering P immobilization in cool soils.", 
                 data: [
                     { type: 'text', name: "Soil Test Results", desc: "P is Medium-Low. K is Low. N is Zero.", img: null },
-                    { type: 'graph', name: "P Uptake Efficiency", desc: "Placement of Phosphorus (P) near the seed is crucial when soil T is below 18°C.", img: 'NutrientUptake_250x150.png' }
+                    { type: 'graph', name: "P Uptake Efficiency", desc: "Placing Phosphorus (P) near the seed is critical when soil T is below 18 deg C.", img: 'NutrientUptake_250x150.png' }
                 ],
                 actionType: 'fertilizer', 
-                options: [{ id: 'NitrogenOnly', label: 'In-Furrow Nitrogen-Only', score: 40 }, { id: 'Broadcast', label: 'Broadcast all NPK (Cheapest)', score: 60 }, { id: 'NPK+P', label: 'High-P NPK Starter (2x2 band)', score: 100 }],
+                options: [{ id: 'NitrogenOnly', label: 'In-Furrow Nitrogen Only', score: 40 }, { id: 'Broadcast', label: 'Broadcast all NPK (Cheapest)', score: 60 }, { id: 'NPK+P', label: 'High-P NPK Starter (2x2 band)', score: 100 }],
                 correct: 'NPK+P',
-                report: "Correct! The **High-P Starter in a 2x2 band** solves the P-immobility issue in cool soils, delivering the critical nutrient where the young root can access it. Broadcast or N-only starters are insufficient."
+                report: "Correct! **High-P Starter in a 2x2 band** solves the P-immobilization issue in cool soil, delivering the critical element where young roots can access it. Broadcast or N-only starters are insufficient."
             },
             { 
-                id: 4, title: "Replant Decision", phase: "Post-Emergence", 
+                id: 4, title: "Replanting Decision", phase: "Post-Emergence", 
                 timeWindow: "May 15", 
                 stats: { temp: 15, water: 25, ndvi: -50 }, 
-                task: "A sudden cold snap caused a $\mathbf{50\%}$ stand reduction. The surviving plants are healthy. Should you replant?", 
+                task: "A sudden cold snap caused a **50%** stand reduction. Surviving plants are healthy. Should you replant?", 
                 data: [
-                    { type: 'graph', name: "Stand Count Map", desc: "5,000 plants/acre in some spots, 20,000 in others. Average: 12,000 plants/acre.", img: 'StandCount_250x150.png' },
-                    { type: 'text', name: "Yield Loss vs. Stand Reduction (UGA)", desc: "12,000 plants/acre at V2 stage may still yield 80-85% of full potential (if uniform). Replant cost is $\$150/\text{acre}$.", img: null }
+                    { type: 'graph', name: "Stand Count Map", desc: "5,000 plants/acre in some areas, 20,000 in others. Average: 12,000 plants/acre.", img: 'StandCount_250x150.png' },
+                    { type: 'text', name: "Yield Loss vs. Stand Reduction (UGA)", desc: "12,000 plants/acre at V2 can still yield 80-85% of full potential (if uniform). Replanting cost is $150/acre.", img: null }
                 ],
                 actionType: 'replant', 
-                options: [{ id: 'Replant', label: 'Total Replant (High Cost)', score: 50 }, { id: 'SpotReplant', label: 'Spot Replant Only (Logistically Difficult)', score: 70 }, { id: 'KeepStand', label: 'Keep Current Stand (Best ROI)', score: 100 }],
+                options: [{ id: 'Replant', label: 'Full Replant (High Cost)', score: 50 }, { id: 'SpotReplant', label: 'Spot Replant Only (Logistically Difficult)', score: 70 }, { id: 'KeepStand', label: 'Keep Existing Stand (Best ROI)', score: 100 }],
                 correct: 'KeepStand',
-                report: "Excellent financial decision! Despite the low count, keeping the existing stand is the **best economic choice**. The yield loss (15-20%) is less than the cost of replanting (\$150/acre + late planting yield penalty)."
+                report: "Excellent financial decision! Despite the low count, keeping the existing stand is the **best economic choice**. The yield loss (15-20%) is less than the cost of replanting ($150/acre + late planting penalty)."
             },
             { 
-                id: 5, title: "Weed/Stress Detection", phase: "Early Veg. (V6)", 
+                id: 5, title: "Weed/Stress Detection", phase: "Early Vegetative (V6)", 
                 timeWindow: "June 10", 
                 stats: { temp: 22, water: 20, ndvi: -15 }, 
-                task: "NDVI is **15% below average**. Scouting confirms weed presence. $W$ and $T$ are adequate. What is the necessary action?", 
+                task: "NDVI is **15% below average**. Scouting confirms weed pressure. W and T are adequate. What action is necessary?", 
                 data: [
-                    { type: 'graph', name: "NDVI Time-Series Analysis", desc: "NDVI has lagged since emergence. The gap is widening, indicating growing stress.", img: 'NDVILag_250x150.png' },
-                    { type: 'text', name: "Scouting Report", desc: "Severe Pigweed and Grasses visible. Needs immediate action.", img: null }
+                    { type: 'graph', name: "NDVI Time Series Analysis", desc: "NDVI has lagged since emergence. Gap is growing, indicating increasing stress.", img: 'NDVILag_250x150.png' },
+                    { type: 'text', name: "Scouting Report", desc: "Significant Broadleaf (Pigweed) and Grass Weeds visible. Immediate action needed.", img: null }
                 ],
                 actionType: 'irrigation', 
-                options: [{ id: 'MoreN', label: 'Apply more Nitrogen (Fix nutrient deficiency)', score: 50 }, { id: 'HerbicideSpray', label: 'Apply Herbicide via Chemigation', score: 100 }, { id: 'WaterOnly', label: 'Heavy Water Application', score: 40 }],
+                options: [{ id: 'MoreN', label: 'Apply more Nitrogen (Fix deficiency)', score: 50 }, { id: 'HerbicideSpray', label: 'Apply Herbicide via Chemigation', score: 100 }, { id: 'WaterOnly', label: 'Heavy Water Application', score: 40 }],
                 correct: 'HerbicideSpray',
-                report: "The correct choice is **Herbicide via Chemigation**. NDVI stress not tied to water/T is highly indicative of weed pressure. Nitrogen won't solve competition, and plain water will only help the weeds grow faster." 
+                report: "The right choice is **Herbicide via Chemigation**. NDVI stress not tied to water/T is a strong indicator of weed pressure. Nitrogen won't solve competition, and plain water only helps weeds grow faster." 
             },
             { 
-                id: 6, title: "Heat Stress Mitigation", phase: "Grain Fill (R3)", 
+                id: 6, title: "Mitigating Heat Stress", phase: "Grain Fill (R3)", 
                 timeWindow: "July 25", 
                 stats: { temp: 35, water: 12, ndvi: 5 }, 
-                task: "Extreme heat ($35^\circ \text{C}$). $W$ is low (12%). ESI is highly negative. Which action prevents rapid kernel abortion?", 
+                task: "Extreme heat (35 deg C). W is low (12%). ESI is highly negative. What action prevents rapid kernel abortion?", 
                 data: [
                     { type: 'graph', name: "Evaporative Stress Index (ESI)", desc: "ESI shows maximum stress. Crop is shutting down transpiration to conserve water.", img: 'ESI_250x150.png' },
-                    { type: 'text', name: "Corn Sensitivity", desc: "R3 phase stress causes permanent yield loss (tip abortion).", img: null }
+                    { type: 'text', name: "Corn Sensitivity", desc: "Stress at the R3 stage causes irreversible yield loss (tip kernel abortion).", img: null }
                 ],
                 actionType: 'irrigation', 
-                options: [{ id: 'ModerateWater', label: 'Moderate Volume (Normal Cycle)', score: 70 }, { id: 'NoWater', label: 'Wait for Rain (Catastrophic risk)', score: 10 }, { id: 'HighWater', label: 'High Volume (Emergency Cooling)', score: 100 }],
+                options: [{ id: 'ModerateWater', label: 'Moderate Volume (Normal Cycle)', score: 70 }, { id: 'NoWater', label: 'Wait for Rain (Catastrophic Risk)', score: 10 }, { id: 'HighWater', label: 'High Volume (Emergency Cooling)', score: 100 }],
                 correct: 'HighWater',
-                report: "The $\text{T} > 35^\circ \text{C}$ + low $W$ situation demands an **Emergency High Volume** irrigation event. This is the only way to quickly break the severe heat/water stress and cool the canopy, minimizing yield loss." 
+                report: "A T > 35 deg C + low W situation demands **Emergency High-Volume Irrigation**. This is the only way to quickly relieve severe heat/water stress and cool the canopy, minimizing yield loss." 
             },
             { 
                 id: 7, title: "Optimal Harvest Timing", phase: "Maturity", 
                 timeWindow: "September 15", 
                 stats: { temp: 25, water: 18, ndvi: -35 }, 
-                task: "NDVI has dropped 35% (black layer). Forecast predicts rain/wind risk in 10 days. When is the optimal time to harvest?", 
+                task: "NDVI has dropped by 35% (black layer). Forecast suggests rain/wind risk in 10 days. When is the optimal time to harvest?", 
                 data: [
-                    { type: 'graph', name: "NDVI Senescence Curve", desc: "NDVI has fully plateaued at its lowest level, indicating full physiological maturity.", img: 'NDVISenes_250x150.png' },
-                    { type: 'text', name: "Drying Cost vs. Field Loss", desc: "Grain moisture is 22%. Optimal harvest moisture is 18-20%. Waiting 5-7 days saves on drying costs but increases weather risk.", img: null }
+                    { type: 'graph', name: "NDVI Senescence Curve", desc: "NDVI has fully stabilized at its lowest point, indicating full physiological maturity.", img: 'NDVISenes_250x150.png' },
+                    { type: 'text', name: "Drying Cost vs. Field Loss", desc: "Grain moisture is 22%. Optimal harvest moisture is 18-20%. Waiting 5-7 days saves drying cost but increases weather risk.", img: null }
                 ],
                 actionType: 'harvest_date', 
-                options: [{ id: 'Immediate', label: 'Harvest Immediately (High Drying Cost)', score: 70 }, { id: 'MidSep', label: 'Harvest in 5 days (Optimal Balance)', score: 100 }, { id: 'LateSep', label: 'Harvest in 10 days (High Risk of Lodging)', score: 40 }],
+                options: [{ id: 'Immediate', label: 'Harvest Immediately (High Drying Cost)', score: 70 }, { id: 'MidSep', label: 'Harvest in 5 Days (Optimal Balance)', score: 100 }, { id: 'LateSep', label: 'Harvest in 10 Days (High Lodging Risk)', score: 40 }],
                 correct: 'MidSep',
-                report: "Correct! Harvesting in **5 days (Mid-September)** is the optimal trade-off. It allows the grain to dry naturally closer to the 18-20% target (saving money) while successfully avoiding the high risk of damage from the approaching rain/wind front."
+                report: "Correct! Harvesting **in 5 days (Mid-September)** is the optimal trade-off. It allows the grain to naturally dry closer to the 18-20% target (saving money) while successfully avoiding the high risk of damage from the approaching rain/wind event."
             }
         ]
     };
     
+    // --- Image Mapping for each step (using your uploaded files) ---
+    const SCENARIO_IMAGES = [
+        'images/corn.jpeg', 
+        'images/corn_fiel.jpeg', 
+        'images/npk.jpeg', 
+        'images/corn_wather_grow.jpeg', 
+        'images/corn_man.jpeg', 
+        'images/corn_grow_more.jpeg', 
+        'images/corn_growed.jpeg'  
+    ];
+
     // --- 2.3. Game State and Variables ---
     let SCENARIO_STEPS = [];
     let currentStepIndex = 0;
@@ -561,11 +573,9 @@
             return;
         }
 
-        // Hide start screen and show game UI
         $("#start-screen").style.display = 'none';
         $("#game-container").style.display = 'grid';
         
-        // Initialize the game for the selected scenario
         initializeGame();
     }
     
@@ -573,7 +583,7 @@
     window.selectScenario = selectScenario;
 
 
-    // --- 4. GAME CORE LOGIC (Modified to use SCENARIO_STEPS) ---
+    // --- 4. GAME CORE LOGIC (Modified to use SCENARIO_STEPS and Images) ---
     
     function showAlert(message, duration = 2000) {
         const alertModal = $("#alertModal");
@@ -593,11 +603,20 @@
         $("#stat-ndvi").textContent = stats.ndvi;
     }
 
+    function updateFieldImage() {
+        if (currentStepIndex < SCENARIO_IMAGES.length) {
+            $("#field-area").style.backgroundImage = `url('${SCENARIO_IMAGES[currentStepIndex]}')`;
+        } else {
+            // For the final "harvested" state, or if more steps than images
+            $("#field-area").style.backgroundImage = `url('${SCENARIO_IMAGES[SCENARIO_IMAGES.length - 1]}')`;
+        }
+    }
+
     function updateStepPanel() {
         const step = SCENARIO_STEPS[currentStepIndex];
         $("#current-step-number").textContent = step.id;
         $("#current-step-title").textContent = step.title;
-        $("#current-step-task").innerHTML = `Required Action: **${step.actionType.replace('_', ' ').toUpperCase()}**`;
+        $("#current-step-task").innerHTML = `Action Required: **${step.actionType.replace('_', ' ').toUpperCase()}**`;
         
         $$('.step-indicator').forEach((el, i) => {
             el.classList.remove('active');
@@ -617,6 +636,7 @@
         $(`#btn-${step.actionType}`).classList.add('active'); 
 
         updateMiniPanel(step.stats);
+        updateFieldImage(); // Update the main field image
         selectedAction = null;
         $("#field-message").textContent = `Step ${step.id}: Press **Data Analysis** to begin.`;
     }
@@ -643,12 +663,12 @@
         $("#modal-action-options").style.display = 'none'; 
         
         $("#modal-confirm-btn").style.display = 'block';
-        $("#modal-confirm-btn").textContent = 'Analyze Complete. Proceed to Action.';
+        $("#modal-confirm-btn").textContent = 'Analysis Complete. Proceed to Action.';
         $("#modal-confirm-btn").onclick = () => {
             modal.classList.remove('visible');
             setTimeout(() => {modal.style.display = 'none';}, 300);
 
-            $("#field-message").textContent = `Tool **${step.actionType.replace('_', ' ').toUpperCase()}** selected. Click the field to make your choice!`;
+            $("#field-message").textContent = `**${step.actionType.replace('_', ' ').toUpperCase()}** Tool selected. Click on the field to make your choice!`;
             selectedAction = step.actionType;
         };
         $("#modal-close-btn").style.display = 'none';
@@ -659,7 +679,7 @@
     function openActionModal(step) {
         const modal = $("#dataModal");
         $("#modal-title").textContent = `ACTION: ${step.title}`;
-        $("#modal-event-story").textContent = `Apply your knowledge: Select the best option based on your data analysis.`;
+        $("#modal-event-story").textContent = `Apply your knowledge: Select the best option based on data analysis.`;
         $("#modal-data-content").innerHTML = '';
         $("#modal-task-text").textContent = step.task;
         
@@ -721,7 +741,7 @@
             <h4>Data Interpretation and Optimal Action:</h4>
             <p>${step.report.replace(/\\text\{C\}/g, 'C').replace(/\\ge/g, '>=')}</p>
             <p style="margin-top:15px; font-weight:bold; color: ${color === 'done-green' ? '#34A853' : (color === 'done-yellow' ? '#FFC107' : '#EA4335')};">
-                ${score >= 90 ? "Success! You made the optimal decision." : (score >= 65 ? "Good, but not perfect. Some yield loss occurred." : "Critical mistake! This decision has severely impacted your final yield.")}
+                ${score >= 90 ? "Success! You took the optimal action." : (score >= 65 ? "Good, but not perfect. Some yield potential was lost." : "Critical error! This decision severely impacted your final yield.")}
             </p>
         `;
 
@@ -751,17 +771,47 @@
 
     function showFinalReport() {
         const modal = $("#dataModal");
+        
+        // 1. Determine the final image path based on totalScore
+        const finalScore = Math.round(totalScore);
+        let finalImagePath = '';
+        let finalYieldText = '';
+        let finalResultTitle = '';
+        let finalResultColor = '';
+        
+        if (finalScore > 60) {
+            finalImagePath = 'images/summery.jpeg'; 
+            finalYieldText = "You achieved a **Fantastic Yield** thanks to excellent agronomic decisions. High management efficiency. [Forecast: 190+ bushels/acre]";
+            finalResultTitle = "EXCELLENT";
+            finalResultColor = '#34A853'; // Green
+        } else if (finalScore >= 30) {
+            finalImagePath = 'images/bad.jpeg'; 
+            finalYieldText = "You achieved an **Average Yield**. Several sub-optimal decisions cost you a portion of the potential. [Forecast: 140-189 bushels/acre]";
+            finalResultTitle = "DECENT";
+            finalResultColor = '#FFC107'; // Yellow
+        } else {
+            finalImagePath = 'images/so_bad.jpeg'; 
+            finalYieldText = "You achieved a **Low/Critical Yield**. Key errors were made, leading to significant losses. [Forecast: < 140 bushels/acre]";
+            finalResultTitle = "CRITICAL";
+            finalResultColor = '#EA4335'; // Red
+        }
+
         modal.style.display = 'flex';
         $("#modal-title").textContent = "SIMULATION COMPLETE";
         $("#modal-event-story").innerHTML = `
             <h2>Mission Accomplished, Farm Navigator!</h2>
-            <p>You have guided the South Georgia Corn Crop through all critical decision points using NASA and meteorological data. Your final yield and profitability are calculated based on your choices.</p>
-            <hr>
-            <div class="final-score-text" style="color: ${totalScore >= 90 ? '#34A853' : (totalScore >= 65 ? '#FFC107' : '#EA4335')};">
-                FINAL PERFORMANCE SCORE: ${Math.round(totalScore)}%
+            <p>You guided the corn crop through all critical stages. Here is your final result:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <img src="${finalImagePath}" alt="Final Crop Result" style="max-width: 300px; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
             </div>
-            <p>This score reflects your ability to accurately interpret complex data and execute timely, optimal agronomic actions. Thank you for using the NASA Farm Navigator!</p>
+            <hr>
+            <div class="final-score-text" style="color: ${finalResultColor};">
+                FINAL EFFICIENCY SCORE: ${finalScore}%
+            </div>
+            <p><strong>Result Summary (${finalResultTitle}):</strong> ${finalYieldText}</p>
+            <p>This score reflects your ability to interpret complex data and execute timely, optimal agronomic actions.</p>
         `;
+
         $("#modal-data-content").innerHTML = '';
         $("#modal-task-text").innerHTML = '';
         $("#modal-confirm-btn").style.display = 'none';
@@ -771,7 +821,6 @@
             modal.classList.remove('visible');
             setTimeout(() => {
                 modal.style.display = 'none';
-                // Return to scenario selection instead of re-initializing the game immediately
                 $("#game-container").style.display = 'none';
                 $("#start-screen").style.display = 'flex';
             }, 300);
@@ -781,21 +830,19 @@
 
     // --- 5. Event Handlers ---
 
-    // Click on the 'Data' button (Info)
     $("#btn-info").addEventListener('click', () => {
         if (SCENARIO_STEPS.length > 0 && $("#btn-info").classList.contains('active')) {
             openDataModal(SCENARIO_STEPS[currentStepIndex]);
         }
     });
     
-    // Click on a specific tool (e.g., Fertilizer)
     $$('.icon-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const action = e.currentTarget.getAttribute('data-action');
             const step = SCENARIO_STEPS[currentStepIndex];
 
             if (e.currentTarget.classList.contains('active') && action !== 'info' && action === step.actionType) {
-                 $("#field-message").textContent = `Tool **${action.replace('_', ' ').toUpperCase()}** selected. Click the field to make your choice.`;
+                 $("#field-message").textContent = `**${action.replace('_', ' ').toUpperCase()}** Tool selected. Click on the field to make your choice.`;
                  selectedAction = action;
             } else if (e.currentTarget.classList.contains('active') && action !== 'info' && action !== step.actionType) {
                 showAlert(`Wrong Tool! Action **${step.actionType.replace('_', ' ').toUpperCase()}** is required for this step.`, 2500);
@@ -803,7 +850,6 @@
         });
     });
 
-    // Click on the Field Area
     $("#field-area-clickable").addEventListener('click', () => {
         const step = SCENARIO_STEPS[currentStepIndex];
         if (step && selectedAction === step.actionType) {
@@ -827,7 +873,6 @@
             el.classList.remove('done-red', 'done-yellow', 'done-green', 'active');
         });
         
-        // Populate step indicators based on the current scenario length
         const indicatorContainer = $("#step-indicators");
         indicatorContainer.innerHTML = '';
         for (let i = 1; i <= SCENARIO_STEPS.length; i++) {
@@ -838,6 +883,7 @@
         openDataModal(SCENARIO_STEPS[currentStepIndex]);
     }
     
+    // The game now starts on the scenario selection screen. No direct initializeGame() call here.
 </script>
 
 </body>
