@@ -737,8 +737,8 @@
 
           <div class="card" style="border-left: 1px solid var(--border);">
             <div class="card-header">
-              <h3 class="card-title">Season Summary</h3>
-              <div class="card-subtitle">Sustainability and Efficiency Assessment</div>
+              <h3 class="card-title">Season Summary</h3><div class="card-subtitle">Sustainability and Efficiency Assessment</div>
+
             </div>
             <div class="results-grid">
               <div class="result-item">
@@ -1029,7 +1029,7 @@
         worldCopyJump: false,
         maxBounds: [[-85, -180], [85, 180]],
         maxBoundsViscosity: 1.0
-      }).setView([48.3794, 31.1656], 6); // Center of Ukraine, slightly more zoom for start
+      }).setView([48.3794, 31.1656],4); // Center of Ukraine, slightly more zoom for start
       
       // 3. Base Layers
       osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' });
