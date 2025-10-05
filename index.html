@@ -647,10 +647,17 @@
         <div class="form-group">
           <label for="cropSelect">Planning: Select Crop</label>
           <select id="cropSelect">
-            <option value="maize">Maize (Corn)</option>
+            <option value="maize">Maize</option>
             <option value="wheat">Wheat</option>
             <option value="soy">Soy</option>
-            <option value="sorghum">Sorghum</option>
+            <option value="sorghum">Sorghum (Сорго)</option>
+            
+            <option value="barley">Barley</option>
+            <option value="sunflower">Sunflower</option>
+            <option value="sugarbeet">Sugar Beet</option>
+            <option value="rapeseed">Rapeseed</option>
+            <option value="rice">Rice</option>
+            <option value="potato">Potato</option>
           </select>
         </div>
 
@@ -1235,18 +1242,55 @@
       // Emulate simulation calculation delay
       setTimeout(() => {
         // Emulate complex simulation algorithm
-        let yieldFactor = 4500;
-        let waterFactor = 200;
+        let yieldFactor = 4500; // Base yield (approx maize/wheat in kg/ha)
+        let waterFactor = 200; // Base water usage (m³)
         let ecoFactor = 'Medium';
         let score = 75;
 
-        // Adjustments based on input parameters
+        // Adjustments based on input parameters and crop type
         if (crop === 'maize') {
+          // yieldFactor starts at 4500, suitable for maize
           yieldFactor += irrigation * 100 + fert * 5;
           waterFactor += irrigation * 50;
         } else if (crop === 'wheat') {
+          // yieldFactor starts at 4500, suitable for wheat
           yieldFactor += irrigation * 70 + fert * 7;
           waterFactor += irrigation * 30;
+        } else if (crop === 'soy') {
+            yieldFactor = 3500; // Adjust base for soy
+            yieldFactor += irrigation * 80 + fert * 4;
+            waterFactor += irrigation * 20; // Lower water
+        } else if (crop === 'sorghum') {
+            yieldFactor = 5000; // Adjust base for sorghum (drought resistant)
+            yieldFactor += irrigation * 90 + fert * 3;
+            waterFactor += irrigation * 15; // Lowest water
+        } else if (crop === 'barley') {
+            yieldFactor = 4000; // Adjust base for barley
+            yieldFactor += irrigation * 60 + fert * 6;
+            waterFactor += irrigation * 25;
+        } else if (crop === 'sunflower') {
+            yieldFactor = 3000; // Adjust base for sunflower (lower yield)
+            yieldFactor += irrigation * 50 + fert * 8;
+            waterFactor += irrigation * 40;
+        } else if (crop === 'sugarbeet') {
+            yieldFactor = 70000; // High base for sugar beet (by weight)
+            waterFactor = 800; // High base water usage
+            yieldFactor += irrigation * 150 + fert * 12;
+            waterFactor += irrigation * 80;
+        } else if (crop === 'rapeseed') {
+            yieldFactor = 3500; // Adjust base for rapeseed
+            yieldFactor += irrigation * 40 + fert * 10;
+            waterFactor += irrigation * 35;
+        } else if (crop === 'rice') {
+            yieldFactor = 8000; // Adjust base for rice
+            waterFactor = 1000; // Very high base water usage
+            yieldFactor += irrigation * 120 + fert * 8;
+            waterFactor += irrigation * 150;
+        } else if (crop === 'potato') {
+            yieldFactor = 35000; // High base for potato (by weight)
+            waterFactor = 500; // High base water usage
+            yieldFactor += irrigation * 130 + fert * 10;
+            waterFactor += irrigation * 60;
         }
 
         // Scoring logic
