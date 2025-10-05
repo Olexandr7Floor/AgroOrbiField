@@ -31,7 +31,39 @@
             left: 50px;
             z-index: 100;
         }
+        .main-content {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+        }
 
+        #farm-grid {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 6px;
+        }
+
+        .farm-plot {
+            background-color: rgba(233, 250, 0, 0.2);
+            border-radius: 4px;
+            border: 1px solid rgba(149, 255, 0, 0.15);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .farm-plot:hover {
+            background-color: rgba(149, 255, 0, 0.3);
+            transform: scale(1.05);
+            z-index: 5;
+            border-color: rgba(101, 163, 13, 0.4);
+        }
         .page-wrapper {
             display: grid;
             grid-template-columns: 1fr 300px; 
@@ -84,15 +116,6 @@
             height: 28px;
         }
 
-        .main-content {
-            flex-grow: 1;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
         .top-indicators {
             position: absolute;
             top: 20px;
@@ -122,23 +145,6 @@
             font-weight: 700;
         }
         
-        .main-goal {
-            text-align: center;
-        }
-        .main-goal .goal-text {
-            color: var(--red);
-            font-weight: bold;
-            font-size: 24px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .main-goal .goal-underline {
-            width: 60px;
-            height: 4px;
-            background-color: var(--green);
-            border-radius: 2px;
-            margin: 0 auto;
-        }
         
         .scenario-sidebar {
             display: flex;
@@ -264,10 +270,7 @@
                     <div class="indicator"><span class="indicator-icon">🌡️</span> t</div>
                     <div class="indicator"><span class="indicator-icon">💧</span> %</div>
                 </div>
-                <div class="main-goal">
-                    <div class="goal-text">Ціль</div>
-                    <div class="goal-underline"></div>
-                </div>
+                <div id="farm-grid"></div>
             </div>
         </div>
 
@@ -290,6 +293,20 @@
     </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const farmGrid = document.getElementById('farm-grid');
+        if (!farmGrid) return;
+
+        const plotsCount = 12 * 8; 
+
+        for (let i = 0; i < plotsCount; i++) {
+            const plot = document.createElement('div');
+            plot.classList.add('farm-plot');
+            plot.dataset.plotId = i;
+            farmGrid.appendChild(plot);
+        }
+    });
+
     const difficultyButtons = document.querySelectorAll('.difficulty-button');
     const modal = document.getElementById('scenario-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -313,12 +330,12 @@
         const difficultyMap = { easy: 'Легкі', medium: 'Середні', hard: 'Складні' };
         modalTitle.textContent = `Сценарії: ${difficultyMap[difficulty]}`;
         scenarioList.innerHTML = '';
-        const currentScenarios = SCENARIO_MANIFEST[difficulty] || [];
+        const currentScenarios = (typeof SCENARIO_MANIFEST !== 'undefined' && SCENARIO_MANIFEST[difficulty]) ? SCENARIO_MANIFEST[difficulty] : [];
         if (currentScenarios.length > 0) {
             currentScenarios.forEach(fileName => {
                 const scenarioNumber = fileName.split('_').pop().split('.')[0];
                 const displayName = `Сценарій ${scenarioNumber}`;
-                const filePath = `scenario/${difficulty}/${fileName}`;
+                const filePath = `scripts/scenario/${difficulty}/${fileName}`;
                 const li = document.createElement('li');
                 li.innerHTML = `<button onclick="loadScenario('${filePath}')">${displayName}</button>`;
                 scenarioList.appendChild(li);
