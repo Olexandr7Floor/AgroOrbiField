@@ -307,7 +307,76 @@
         -webkit-text-fill-color: transparent;
         font-size: 28px;
     }
-    
+    /* --- СТИЛІ ДЛЯ LEAFLET CONTROL LAYERS --- */
+.leaflet-control-layers {
+    /* Використовуємо темний фон, як для карток */
+    background-color: var(--bg-card) !important; 
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important; /* 12px */
+    box-shadow: var(--shadow);
+    padding: 10px;
+    color: var(--text-primary); /* Основний колір тексту */
+    font-size: 14px;
+}
+
+/* Стилі для контейнера з розширеними шарами */
+.leaflet-control-layers-expanded {
+    padding: 10px 15px 10px 10px !important;
+    white-space: nowrap;
+}
+
+/* Стиль для лінії роздільника між базовими шарами та оверлеями */
+.leaflet-control-layers-separator {
+    margin: 8px 0;
+    border-top: 1px solid var(--border) !important;
+}
+
+/* Стилі для підписів шарів */
+.leaflet-control-layers label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-secondary); /* Трохи приглушений текст */
+    padding: 2px 0;
+    transition: color 0.2s;
+}
+
+.leaflet-control-layers label:hover {
+    color: var(--text-primary); /* Яскравіший текст при наведенні */
+}
+
+/* Стилі для радіокнопок та чекбоксів (можна покращити вигляд) */
+.leaflet-control-layers input[type="radio"],
+.leaflet-control-layers input[type="checkbox"] {
+    /* Змінюємо стандартний вигляд, щоб відповідав темній темі */
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--text-muted);
+    border-radius: 3px;
+    background-color: var(--bg-dark);
+    transition: all 0.2s;
+    margin-right: 0; /* Вирівнюємо відступ, оскільки він уже є у label gap */
+    flex-shrink: 0; /* Не дозволяємо стискатися */
+}
+
+/* Стиль для відміченого чекбокса/радіокнопки */
+.leaflet-control-layers input:checked {
+    background-color: var(--primary); /* Синій колір, як у вашій темі */
+    border-color: var(--primary);
+}
+
+/* Стиль для галочки всередині чекбокса */
+.leaflet-control-layers input[type="checkbox"]:checked::before {
+    content: '✔';
+    display: block;
+    color: var(--text-primary);
+    font-size: 10px;
+    line-height: 14px;
+    text-align: center;
+}
     /* Log */
     .log-container {
         margin-top: 20px;
