@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz: NASA Farm Navigators</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS variables copied from index.html for consistent look */
+        :root {
+            --primary: #2b8cbe; /* Blue */
+            --primary-dark: #1a6a9c;
+            --secondary: #cbe22b; /* Lime Green */
+            --bg-dark: #0f1720;
+            --bg-card: rgba(13, 25, 43, 0.95); /* Slightly less transparent */
+            --text-primary: #e6eef6;
+            --text-secondary: #9aa8b2;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --warning: #FF9800;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 12px;
+            --shadow: 0 8px 32px rgba(2, 6, 23, 0.4);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: var(--text-primary);
+            
+            /* NEW: Thematic Background with an actual Image (Placeholder) */
+            background: 
+                /* 1. Dark Overlay for readability (Covers the image, 90-95% opacity) */
+                linear-gradient(rgba(15, 23, 32, 0.9) 0%, rgba(7, 16, 37, 0.95) 100%), 
+                /* 2. Grid Pattern (Subtle blue detail) */
+                repeating-linear-gradient(0deg, rgba(43, 140, 190, 0.1) 0, rgba(43, 140, 190, 0.1) 1px, transparent 1px, transparent 50px),
+                repeating-linear-gradient(90deg, rgba(43, 140, 190, 0.1) 0, rgba(43, 140, 190, 0.1) 1px, transparent 1px, transparent 50px),
+                /* 3. Actual Image (Link needs to be replaced with your image file/URL) */
+                url('https://example.com/nasa_farm_satellite_view_placeholder.jpg'); /* REPLACE THIS URL з посиланням на ваше зображення */
+                
+            background-size: cover, 50px 50px, 50px 50px, cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #071025; /* Fallback color */
+        }
+
+        .quiz-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            max-width: 900px;
+            width: 100%;
+            /* Ensure it sits above the background */
+            z-index: 10; 
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--secondary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 12px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-shadow: 0 0 5px rgba(203, 226, 43, 0.5);
+        }
+
+        .question-card {
+            margin-bottom: 25px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.03);
+            display: flex;
+            gap: 20px;
+        }
+
+        .question-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--bg-dark);
+        }
+
+        .question-content {
+            flex-grow: 1;
+        }
+
+        .question h2 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .options label:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary);
+        }
+        
+        /* Highlight selected option */
+        .options input[type="radio"]:checked + span {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        .options input[type="radio"]:checked:hover + span {
+            color: var(--secondary);
+        }
+
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .correct {
+            background-color: rgba(76, 175, 80, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--text-primary); 
+        }
+        
+        .incorrect strong, .incorrect span {
+            color: var(--danger);
+        }
+        .incorrect .explanation {
+            color: var(--text-primary);
+        }
+
+        .feedback strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .feedback a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .feedback a:hover {
+            text-decoration: underline;
+        }
+
+        #submitBtn, .back-btn {
+            display: inline-block;
+            background: var(--primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        .back-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        #submitBtn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(43, 140, 190, 0.4);
+        }
+        .back-btn:hover {
+            border-color: var(--secondary);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(90deg, var(--secondary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: none;
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Interactive Quiz: NASA Farm Navigators</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 25px;">Test your knowledge on key concepts of sustainable agriculture and the application of NASA's open data for the **NASA Farm Navigators** challenge.</p>
+
+    <form id="quizForm">
+        
+        <div class="question-card" data-answer="1">
+            <div class="question-icon">1</div>
+            <div class="question-content">
+                <h2>Which NASA satellite-derived index is the **most direct indicator** of vegetation health and vigor?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q1" value="1"> <span>NDVI (Normalized Difference Vegetation Index)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q1" value="2"> <span>LST (Land Surface Temperature)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q1" value="3"> <span>Total Precipitation Amount (NASA POWER)</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback1"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="2">
+            <div class="question-icon">2</div>
+            <div class="question-content">
+                <h2>In a farming simulation based on NASA data, which variable is a **farmer-controlled input** that directly affects crop success?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q2" value="1"> <span>Average Annual Temperature</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q2" value="2"> <span>Fertilizer Application Rate</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q2" value="3"> <span>Soil Moisture (Actual Measured)</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="3">
+            <div class="question-icon">3</div>
+            <div class="question-content">
+                <h2>A key challenge pitfall is using low-resolution data (e.g., 500m per pixel) to advise a smallholder farm. What's the main danger?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q3" value="1"> <span>The data will be delayed by several weeks.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q3" value="2"> <span>The simulation will crash due to too many data points.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q3" value="3"> <span>The reading for the small farm will be averaged with surrounding non-farm land, making it inaccurate.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback3"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="3">
+            <div class="question-icon">4</div>
+            <div class="question-content">
+                <h2>Which farming practice best aligns with the goal of **environmental sustainability** and conservation mentioned in the challenge?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q4" value="1"> <span>Applying the maximum allowable fertilizer to guarantee yield.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q4" value="2"> <span>Using high-volume flood irrigation regardless of soil moisture.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q4" value="3"> <span>Precision irrigation guided by NASA's soil moisture data.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="1">
+            <div class="question-icon">5</div>
+            <div class="question-content">
+                <h2>Which NASA resource provides easily accessible, long-term climate data (temperature, rainfall, solar energy) necessary for farm planning?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q5" value="1"> <span>NASA POWER (Prediction of Worldwide Energy Resources)</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q5" value="2"> <span>JPL's Asteroid Watch Data</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q5" value="3"> <span>Hubble Space Telescope Imagery</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback5"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="2">
+            <div class="question-icon">6</div>
+            <div class="question-content">
+                <h2>If a time series of NDVI data for a field shows a sudden **drop** during the peak growing season, what might that indicate to the farmer?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q6" value="1"> <span>The crop is ready for harvest.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q6" value="2"> <span>The crop is experiencing stress (e.g., drought, pest infestation).</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q6" value="3"> <span>The field's soil moisture is too high.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback6"></div>
+            </div>
+        </div>
+        
+        <div class="question-card" data-answer="3">
+            <div class="question-icon">7</div>
+            <div class="question-content">
+                <h2>The challenge seeks to bridge the gap between complex NASA science and **practical farming applications**. What tool is proposed for this bridge?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q7" value="1"> <span>Directly funding farmers to buy satellite receiving equipment.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q7" value="2"> <span>Requiring university-level courses for all data users.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q7" value="3"> <span>A creative, engaging, educational game.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback7"></div>
+            </div>
+        </div>
+        
+        <div class="question-card" data-answer="1">
+            <div class="question-icon">8</div>
+            <div class="question-content">
+                <h2>Why is it important to know the **depth** that a Soil Moisture dataset is reporting (e.g., 0-5 cm vs. 10-20 cm)?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q8" value="1"> <span>Different soil depths affect different root zones; topsoil moisture is not the same as root zone moisture.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q8" value="2"> <span>It changes the color of the data visualization on the map.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q8" value="3"> <span>Deep moisture data is less accurate than surface moisture data.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback8"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="2">
+            <div class="question-icon">9</div>
+            <div class="question-content">
+                <h2>What is the best way to prevent players in the game from **misinterpreting** complex NASA data?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q9" value="1"> <span>Force them to read a 100-page data documentation manual before starting.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q9" value="2"> <span>Include clear **cues and prompts** (hints) that highlight data limitations or relevance.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q9" value="3"> <span>Only show data that is 100% reliable and certain.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback9"></div>
+            </div>
+        </div>
+
+        <div class="question-card" data-answer="1">
+            <div class="question-icon">10</div>
+            <div class="question-content">
+                <h2>Excessive fertilizer runoff from farms primarily contributes to which environmental problem?</h2>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q10" value="1"> <span>Eutrophication (algal blooms and 'dead zones') in local waterways.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q10" value="2"> <span>Increased seismic activity in the local area.</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="q10" value="3"> <span>Decreased overall air temperature.</span>
+                    </label>
+                </div>
+                <div class="feedback" id="feedback10"></div>
+            </div>
+        </div>
+
+        <button type="button" id="submitBtn">Check Answers</button>
+        <a href="index.html" class="back-btn">Back to Simulator</a>
+
+    </form>
+    
+    <div class="results" id="results" style="display:none;"></div>
+</div>
+
+<script>
+    const quizForm = document.getElementById('quizForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const questions = document.querySelectorAll('.question-card');
+    const resultsDiv = document.getElementById('results');
+
+    const feedbackMessages = {
+        q1: {
+            correct: "Correct! **NDVI** is based on the difference between red light absorption and near-infrared light reflection, making it the most reliable measure of photosynthetically active biomass.",
+            incorrect: "Incorrect. While LST (heat) and Precipitation are important, **NDVI** is the standard for quantifying greenness and stress. Poor NDVI usually means your crops need immediate attention!",
+            resource: "https://earthobservatory.nasa.gov/features/NDVI/ndvi_2.php"
+        },
+        q2: {
+            correct: "Correct! The farmer can only control inputs like **fertilizer** or **irrigation**. NASA data informs *when* and *how much* to apply, but the decision is the farmer's.",
+            incorrect: "Incorrect. Temperature and Soil Moisture are environmental factors reported by NASA. The farmer's decision on **Fertilizer Application** is the variable they directly manipulate to optimize yield.",
+            resource: "https://www.nasa.gov/general/satellite-soil-moisture/"
+        },
+        q3: {
+            correct: "Correct! A single pixel of low-resolution data might cover an area larger than the small farm itself, averaging the farm's condition with forests, roads, or other lands. This leads to **misinterpretation**.",
+            incorrect: "Incorrect. This relates to the **Data Utilization** pitfall. The low resolution makes precise farm management impossible because the data point is not specific to the farm's boundaries.",
+            resource: "https://www.earthdata.nasa.gov/faq/articles/what-is-spatial-resolution"
+        },
+        q4: {
+            correct: "Correct! **Precision irrigation** uses data (like NASA's soil moisture) to apply *only* the water that is needed, conserving resources and minimizing runoff.",
+            incorrect: "Incorrect. Sustainability focuses on minimizing resource use. Applying excess fertilizer (Q1) or over-irrigating (Q2) both waste resources and harm the environment. **Precision** is key.",
+            resource: "https://www.fao.org/3/a-az441e.pdf"
+        },
+        q5: {
+            correct: "Correct! **NASA POWER** (Prediction of Worldwide Energy Resources) provides easily accessible global, long-term climate data perfect for agricultural models and planning.",
+            incorrect: "Incorrect. The resource for *climate* and *solar energy* data relevant to agriculture is **NASA POWER**. It aggregates data from multiple NASA satellites into an easily usable format.",
+            resource: "https://power.larc.nasa.gov/"
+        },
+        q6: {
+            correct: "Correct! A high NDVI means healthy, rapidly growing plants. A sudden **drop** indicates the plant is reflecting less near-infrared light, which is a classic sign of **stress** (drought, disease, or nutrient deficiency).",
+            incorrect: "Incorrect. A sudden drop in NDVI usually signals the plant is stressed or dying. If a farmer ignores this, it will lead to significant yield loss.",
+            resource: "https://www.usgs.gov/media/images/ndvi-vegetation-stress"
+        },
+        q7: {
+            correct: "Correct! The challenge specifically calls for creating an **engaging, educational game** to serve as a user-friendly tool to bridge the data-to-application gap.",
+            incorrect: "Incorrect. While education is the goal, the proposed solution outlined in the challenge summary is the creation of a **creative, engaging, educational game** that simulates real-world scenarios.",
+            resource: "https://www.nasa.gov/solve/spaceapps-challenge/challenge-detail-18" // Link to the challenge summary
+        },
+        q8: {
+            correct: "Correct! Plant roots absorb moisture at different depths. Surface moisture (0-5 cm) is affected quickly by rain/sun, while root zone moisture (deeper) dictates the *need* for irrigation.",
+            incorrect: "Incorrect. Knowing the depth is vital for making correct irrigation decisions. If the game only shows surface moisture, the simulation will be too simplistic (**Surface-level Simulation Pitfall**).",
+            resource: "https://smos.org/data/soil-moisture-depths/"
+        },
+        q9: {
+            correct: "Correct! **Cues and prompts** (hints) guide the player's decision-making and ensure that complex data limitations (like resolution) are considered without overwhelming the player.",
+            incorrect: "Incorrect. The challenge explicitly advises using **Cues and Prompts** to prevent misinterpretation, making the learning experience easier and more dynamic.",
+            resource: "https://www.nasa.gov/solve/spaceapps-challenge/challenge-detail-18" // Referencing the Game Design Tips section
+        },
+        q10: {
+            correct: "Correct! Excess nitrogen and phosphorus runoff leads to **eutrophication**, where rapid algae growth consumes oxygen, suffocating fish and creating 'dead zones'.",
+            incorrect: "Incorrect. The main immediate environmental threat from fertilizer runoff is **eutrophication** in water bodies, which leads to oxygen depletion and the creation of 'dead zones'.",
+            resource: "https://oceanservice.noaa.gov/facts/eutrophication.html"
+        }
+    };
+
+    function checkQuiz() {
+        let score = 0;
+        let total = questions.length;
+
+        questions.forEach((question, index) => {
+            const qName = `q${index + 1}`;
+            const correctValue = question.getAttribute('data-answer');
+            const selectedOption = document.querySelector(`input[name="${qName}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback${index + 1}`);
+
+            feedbackDiv.style.display = 'block';
+
+            // Reset colors for all labels in this question
+            const options = question.querySelectorAll('.options label');
+            options.forEach(label => label.style.border = '1px solid rgba(255, 255, 255, 0.1)');
+            
+            // Check if an option was selected
+            if (!selectedOption) {
+                 feedbackDiv.className = 'feedback incorrect';
+                 feedbackDiv.innerHTML = `<strong>Attention!</strong> Please select an answer before checking.`;
+                 return; 
+            }
+
+            if (selectedOption.value === correctValue) {
+                score++;
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = `<strong>Correct Answer!</strong> ${feedbackMessages[qName].correct}`;
+                // Highlight the correct selection
+                selectedOption.parentElement.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--success')}`;
+
+            } else {
+                feedbackDiv.className = 'feedback incorrect';
+                
+                // Highlight the correct answer for learning
+                const correctLabel = document.querySelector(`input[name="${qName}"][value="${correctValue}"]`).parentElement;
+                correctLabel.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--success')}`;
+                
+                // Highlight the wrong answer chosen
+                selectedOption.parentElement.style.border = `1px solid ${getComputedStyle(document.documentElement).getPropertyValue('--danger')}`;
+
+                feedbackDiv.innerHTML = `<strong>Incorrect.</strong> <span class="explanation">${feedbackMessages[qName].incorrect}</span><br>
+                <a href="${feedbackMessages[qName].resource}" target="_blank">Resource: Click to learn why.</a>`;
+            }
+        });
+
+        resultsDiv.style.display = 'block';
+        resultsDiv.innerHTML = `Quiz Complete! You scored ${score} out of ${total} points.`;
+        
+        // Disable button after check and change text
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Answers Locked';
+    }
+
+    submitBtn.addEventListener('click', checkQuiz);
+</script>
+</body>
+</html>
