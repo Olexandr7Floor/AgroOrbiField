@@ -122,7 +122,8 @@
       margin-top: 4px;
     }
     
-    .game-button {
+    /* MODIFIED: Original game-button style is kept, but a new prominent style is added */
+    .game-button-header {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -135,11 +136,40 @@
         border: 1px solid var(--border);
         transition: var(--transition);
     }
-    .game-button:hover {
+    .game-button-header:hover {
         background-color: rgba(255, 255, 255, 0.1);
         color: var(--secondary-light);
     }
     
+    /* NEW PROMINENT GAME BUTTON STYLE */
+    .game-button-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        /* Using secondary (lime green) for high visibility */
+        background: linear-gradient(90deg, var(--secondary), var(--secondary-light));
+        color: var(--bg-dark); /* Dark text on light background */
+        padding: 15px 20px; /* Much larger padding */
+        border-radius: 10px;
+        font-size: 18px; /* Larger font */
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        box-shadow: 0 4px 20px rgba(203, 226, 43, 0.4); /* Strong shadow */
+        transition: var(--transition);
+        width: 100%; /* Full width */
+    }
+
+    .game-button-footer:hover {
+        background: linear-gradient(90deg, var(--secondary-light), var(--secondary));
+        box-shadow: 0 6px 25px rgba(203, 226, 43, 0.6);
+        transform: translateY(-2px);
+    }
+
+    .game-button-footer svg {
+        fill: var(--bg-dark); /* Ensure icon color matches text */
+    }
     /* Form Elements & Buttons (Unchanged) */
     .form-group label {
         display: block;
@@ -628,13 +658,7 @@
             <h1 class="app-title">AgroVerse</h1>
             <div class="app-subtitle">Farm Navigators — GIS Mission</div>
           </div>
-          <a href="game.html" class="game-button" title="Game feature is under development">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-            </svg>
-            Game (MVP)
-          </a>
-        </div>
+          </div>
         
         <div class="data-panel">
             <div class="data-summary-title">Selected Field and Centroid</div>
@@ -701,6 +725,15 @@
                     <span class="log-time">[Init]</span> Waiting for field selection on the map.
                 </div>
             </div>
+        </div>
+        
+        <div>
+          <a href="game.html" class="game-button-footer" title="Game feature is under development">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+            </svg>
+            START GAME (MVP)
+          </a>
         </div>
       </div>
 
