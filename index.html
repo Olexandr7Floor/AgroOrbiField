@@ -659,12 +659,11 @@
 
         <div class="form-group">
           <label for="cropSelect">Planning: Select Crop</label>
-          <select id="cropSelect">
+          <select id="cropSelect" class="select-accent-primary"> 
             <option value="maize">Maize</option>
             <option value="wheat">Wheat</option>
             <option value="soy">Soy</option>
             <option value="sorghum">Sorghum (Сорго)</option>
-            
             <option value="barley">Barley</option>
             <option value="sunflower">Sunflower</option>
             <option value="sugarbeet">Sugar Beet</option>
@@ -673,6 +672,19 @@
             <option value="potato">Potato</option>
           </select>
         </div>
+
+        <style>
+          .select-accent-primary {
+    /* Робить фон прозорим для застосування тіні або кольору */
+    background-color: var(--bg-dark) !important; 
+    border-color: var(--primary) !important; /* Обведення основним кольором */
+    box-shadow: 0 0 10px rgba(43, 140, 190, 0.5); /* Синя тінь */
+    transition: var(--transition);
+}
+.select-accent-primary:hover {
+    box-shadow: 0 0 15px rgba(43, 140, 190, 0.8);
+}
+        </style>
 
         <div class="form-group">
           <label for="irrigation">Planning: Irrigation (mm / day)</label>
