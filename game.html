@@ -249,7 +249,7 @@
             padding-bottom: 8px;
         }
 
-        /* --- Modal Window --- */
+        /* --- Modal Window (Shared) --- */
         .modal {
             position: fixed;
             top: 0;
@@ -299,7 +299,7 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin-top: 15px;
+            margin-top: 5px;
             border-radius: 3px;
         }
         .action-button {
@@ -346,6 +346,28 @@
             z-index: 150;
             display: none;
             animation: bounceIn 0.3s;
+        }
+
+        /* --- Hint Modal Custom Styles --- */
+        #hintModal .modal-content {
+            max-width: 700px;
+            border: 2px solid #34A853; /* Green border for help */
+        }
+        .hint-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            font-size: 0.9em;
+        }
+        .hint-table th, .hint-table td { 
+            border: 1px solid #333; 
+            padding: 10px; 
+            text-align: left; 
+            vertical-align: top;
+        }
+        .hint-table th { 
+            background-color: #3a3a3a; 
+            color: #FFF; 
         }
         
         /* --- Animations --- */
@@ -435,6 +457,15 @@
     </div>
 </div>
 
+<div class="modal" id="hintModal">
+    <div class="modal-content">
+        <h2 id="hint-modal-title">GEOGLAM Crop Monitor Classification Guide</h2>
+        <div id="hint-modal-content">
+            </div>
+        <button class="action-button" style="background-color: #3367D6;" onclick="closeHintModal()">Close Guide</button>
+    </div>
+</div>
+
 <div class="alert-modal" id="alertModal"></div>
 
 <script>
@@ -490,6 +521,23 @@
         }
     };
 
+    // --- GEOGLAM Hint Text ---
+    const GEOGLAM_HINT_TEXT = `
+        <p><strong>Crop Monitor for Early Warning Crop Condition Classes</strong></p>
+        <table class="hint-table">
+            <thead>
+                <tr><th>Condition</th><th>Definition</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong><span style="color: #00FF00;">Exceptional</span></strong></td><td>Conditions are much better than average* at the time of reporting. Used only during the grain-filling through harvest stages.</td></tr>
+                <tr><td><strong><span style="color: #4285F4;">Favourable</span></strong></td><td>Conditions range from slightly below to slightly above-average* at reporting time.</td></tr>
+                <tr><td><strong><span style="color: #FFC107;">Watch</span></strong></td><td>Conditions are not far from average* but there is a potential risk to final yields. There is still time and possibility for the crop to recover to average conditions if the ground situation improves. Used during planting-early vegetative and the vegetative-reproductive stages.</td></tr>
+                <tr><td><strong><span style="color: #FFA500;">Poor</span></strong></td><td>Crop conditions are well below average*. Crop yields are likely to be 10-25% below-average*. This is used when crops are not likely to recover, and impact on yields is likely.</td></tr>
+                <tr><td><strong><span style="color: #EA4335;">Failure</span></strong></td><td>Crop conditions are extremely poor. Crop yields are likely to be 25% or more below-average*.</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.9em; margin-top: 20px;">* “Average” refers to the mean conditions over the most recent 5 years. Learn more about GEOGLAM Crop Monitor Classification from <a href="https://harvest2market.nasaharvest.org/" target="_blank" style="color: #4285F4;">harvest2market.nasaharvest.org</a></p>
+    `;
 
     // --- Game State and Variables ---
     let SCENARIO_STEPS = [];
@@ -632,6 +680,29 @@
 
     // --- 4. GAME CORE LOGIC (Modified to use CROP_IMAGE_MAP) ---
     
+    // Hint Modal functions
+    window.openHintModal = function(title, content) {
+        const modal = $("#hintModal");
+        $("#hint-modal-title").textContent = title;
+        $("#hint-modal-content").innerHTML = content;
+        
+        // Hide dataModal temporarily
+        $("#dataModal").classList.remove('visible'); 
+
+        modal.style.display = 'flex';
+        setTimeout(() => {modal.classList.add('visible');}, 10);
+    }
+
+    window.closeHintModal = function() {
+        const modal = $("#hintModal");
+        modal.classList.remove('visible');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            // Bring dataModal back to focus
+            $("#dataModal").classList.add('visible'); 
+        }, 300);
+    }
+
     function showAlert(message, duration = 2000) {
         const alertModal = $("#alertModal");
         alertModal.textContent = message;
@@ -650,22 +721,16 @@
         $("#stat-ndvi").textContent = stats.ndvi;
     }
 
-    // UPDATED FUNCTION: Correctly maps step index to sequence image index (step_id - 1)
     function updateFieldImage() {
         const cropData = CROP_IMAGE_MAP[currentCropId] || CROP_IMAGE_MAP['Maize'];
         
-        // Image index in sequence array: 0 for Step 1, 1 for after Step 1, ... 7 for after Step 7.
-        // The index shown *before* making the decision for Step N is the image representing the field *before* that step's change.
-        // However, for simplicity, we show the image corresponding to the step ID after the step is completed.
-        // currentStepIndex is 0 for Step 1.
-        
-        // Show the image corresponding to the current phase (index 0 is phase start, index 7 is after all steps).
+        // imageIndex is 0 for Step 1, 1 for after Step 1, ... 7 for after Step 7.
         const imageIndex = currentStepIndex; 
 
         if (cropData && imageIndex < cropData.sequence.length) {
             $("#field-area").style.backgroundImage = `url('${cropData.sequence[imageIndex]}')`;
         } else {
-             // Fallback: If index is out of bounds (e.g., after the last step is completed), show the maturity image (index 7).
+             // Fallback: If index is out of bounds (e.g., after the last step is completed, show maturity image (index 7).
             if (cropData && cropData.sequence.length > 0) {
                 $("#field-area").style.backgroundImage = `url('${cropData.sequence[cropData.sequence.length - 1]}')`;
             } else {
@@ -706,6 +771,7 @@
         fieldAreaClickable.onclick = defaultFieldClickHandler;
     }
     
+    // UPDATED FUNCTION: Now includes the Hint button and clean data visualization output
     function openDataModal(step) {
         const modal = $("#dataModal");
         const modalContent = $("#modal-data-content");
@@ -728,14 +794,24 @@
                 }
             }
 
+            // Clean structure: Name/Title -> Image -> Description (Caption)
             modalContent.innerHTML += `
                 <div class="data-visualization">
                     <h4>${item.name}</h4>
-                    <p>${item.desc.replace(/\\text\{C\}/g, 'C').replace(/\\ge/g, '>=')}</p>
                     ${imagePath ? `<img src="${imagePath}" alt="${item.name}">` : ''}
+                    <p style="margin-top: 10px; font-style: italic; color: #ccc; font-size: 0.95em;">
+                        ${item.desc.replace(/\\text\{C\}/g, 'C').replace(/\\ge/g, '>=')}
+                    </p>
                 </div>
             `;
         });
+
+        // Add Hint Button
+        modalContent.innerHTML += `
+            <button class="action-button" style="background-color: #4285F4; margin-top: 30px;" onclick="openHintModal('GEOGLAM Crop Monitor Classification Guide', GEOGLAM_HINT_TEXT)">
+                <i class="material-icons" style="vertical-align: middle; margin-right: 5px;">help_outline</i> View GEOGLAM Condition Classes Hint
+            </button>
+        `;
 
         $("#modal-task-text").textContent = step.task;
         $("#modal-action-options").style.display = 'none'; 
@@ -863,26 +939,23 @@
         };
     }
 
-    // NEW FUNCTION: Handles the transition to the final result screen
     function handleSimulationEnd() {
         isSimulationFinished = true;
         
-        // 1. Get the final field image (which should be the Maturity image, index 7, NOT the summery one)
-        const imageSet = CROP_IMAGE_MAP[currentCropId] || CROP_IMAGE_MAP['Maize'];
-        
         // Ensure the field is showing the Maturity image (index 7 or last one in sequence)
+        const imageSet = CROP_IMAGE_MAP[currentCropId] || CROP_IMAGE_MAP['Maize'];
         $("#field-area").style.backgroundImage = `url('${imageSet.sequence[imageSet.sequence.length - 1]}')`;
         
         $("#field-message").innerHTML = "SIMULATION FINISHED. <br> **Click on the field** to view the **Final Harvest Report**!";
 
-        // 2. Disable control buttons
+        // Disable control buttons
         $$('.icon-btn').forEach(btn => {
             btn.classList.remove('active');
             btn.style.pointerEvents = 'none';
             btn.style.opacity = '0.4';
         });
         
-        // 3. Set the field click handler to show the final report
+        // Set the field click handler to show the final report
         fieldAreaClickable.onclick = showFinalReport;
     }
 
