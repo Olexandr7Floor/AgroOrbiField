@@ -422,7 +422,7 @@
             <div class="stat-item">🌿 NDVI Delta: <span id="stat-ndvi">--</span>%</div>
         </div>
         <div class="field-action" id="field-area-clickable">
-            <p id="field-message">Step 1: Press **Interactive Information** to begin.</p>
+            <p id="field-message">Step 1: Press  Interactive Information  to begin.</p>
         </div>
         <p style="color:#B0B0B0; position: absolute; bottom: 10px;">Simulated Farm in South Georgia (2025)</p>
     </div>
@@ -436,7 +436,7 @@
             </div>
         <div class="current-step-info">
             <h3>Step <span id="current-step-number">1</span>: <span id="current-step-title">Crop Selection</span></h3>
-            <p id="current-step-task">Action Required: **CROP SELECTION**</p>
+            <p id="current-step-task">Action Required:  CROP SELECTION </p>
         </div>
     </div>
 </div>
@@ -568,7 +568,7 @@
                 actionType: 'crop', 
                 options: [{ id: 'Wheat', label: 'Wheat', score: 60 }, { id: 'Maize', label: 'Maize (Corn)', score: 100 }, { id: 'Soy beans', label: 'Soy beans', score: 70 }],
                 correct: 'Maize',
-                report: "Excellent! **Maize (Corn)**, despite being water-intensive, offers the best blend of high yield potential and market stability compared to volatile Wheat/Soy beans markets."
+                report: "Excellent! Maize (Corn), despite being water-intensive, offers the best blend of high yield potential and market stability compared to volatile Wheat/Soy beans markets."
             },
             {
                 id: 2, title: "When to Plant?", phase: "Planting Window",
@@ -583,7 +583,7 @@
                 actionType: 'planting_date', 
                 options: [{ id: 'Mar15-22', label: 'Mid-March (High Risk)', score: 30 }, { id: 'May10-17', label: 'Mid-May (Too Late)', score: 60 }, { id: 'Apr25-May02', label: 'Late April (Optimal Stability)', score: 100 }],
                 correct: 'Apr25-May02',
-                report: "Perfect! **Late April** provides the necessary stability (>= 13 deg C) for uniform emergence, overriding the small yield benefit of planting during the volatile mid-April window."
+                report: "Perfect! Late April provides the necessary stability (>= 13 deg C) for uniform emergence, overriding the small yield benefit of planting during the volatile mid-April window."
             },
             {
                 id: 3, title: "Starter Fertilizer Strategy", phase: "Emergence", 
@@ -598,13 +598,13 @@
                 actionType: 'fertilizer', 
                 options: [{ id: 'NitrogenOnly', label: 'In-Furrow Nitrogen Only', score: 40 }, { id: 'Broadcast', label: 'Broadcast all NPK (Cheapest)', score: 60 }, { id: 'NPK+P', label: 'High-P NPK Starter (2x2 band)', score: 100 }],
                 correct: 'NPK+P',
-                report: "Correct! **High-P Starter in a 2x2 band** solves the P-immobilization issue in cool soil, delivering the critical element where young roots can access it. Broadcast or N-only starters are insufficient."
+                report: "Correct! High-P Starter in a 2x2 band solves the P-immobilization issue in cool soil, delivering the critical element where young roots can access it. Broadcast or N-only starters are insufficient."
             },
             { 
                 id: 4, title: "Replanting Decision", phase: "Post-Emergence", 
                 timeWindow: "May 15", 
                 stats: { temp: 15, water: 25, ndvi: -50 }, 
-                task: "A sudden cold snap caused a **50%** stand reduction. Surviving plants are healthy. Should you replant?", 
+                task: "A sudden cold snap caused a 50% stand reduction. Surviving plants are healthy. Should you replant?", 
                 data: [
                     { type: 'graph', name: "Stand Count Map", desc: "5,000 plants/acre in some areas, 20,000 in others. Average: 12,000 plants/acre.", img: 'images/step4_1.png' },
                     { type: 'text', name: "Yield Loss vs. Stand Reduction (UGA)", desc: "12,000 plants/acre at V2 can still yield 80-85% of full potential (if uniform). Replanting cost is $150/acre.", img: 'images/step4_2.png' }
@@ -612,13 +612,13 @@
                 actionType: 'replant', 
                 options: [{ id: 'Replant', label: 'Full Replant (High Cost)', score: 50 }, { id: 'SpotReplant', label: 'Spot Replant Only (Logistically Difficult)', score: 70 }, { id: 'KeepStand', label: 'Keep Existing Stand (Best ROI)', score: 100 }],
                 correct: 'KeepStand',
-                report: "Excellent financial decision! Despite the low count, keeping the existing stand is the **best economic choice**. The yield loss (15-20%) is less than the cost of replanting ($150/acre + late planting penalty)."
+                report: "Excellent financial decision! Despite the low count, keeping the existing stand is the best economic choice . The yield loss (15-20%) is less than the cost of replanting ($150/acre + late planting penalty)."
             },
             { 
                 id: 5, title: "Weed/Stress Detection", phase: "Early Vegetative (V6)", 
                 timeWindow: "June 10", 
                 stats: { temp: 22, water: 20, ndvi: -15 }, 
-                task: "NDVI is **15% below average**. Scouting confirms weed pressure. W and T are adequate. What action is necessary?", 
+                task: "NDVI is  15% below average . Scouting confirms weed pressure. W and T are adequate. What action is necessary?", 
                 data: [
                     { type: 'graph', name: "NDVI Time Series Analysis", desc: "NDVI has lagged since emergence. Gap is growing, indicating increasing stress.", img: 'images/step5_1.png' },
                     { type: 'text', name: "Scouting Report", desc: "Significant Broadleaf (Pigweed) and Grass Weeds visible. Immediate action needed.", img: 'images/step5_2.png' },
@@ -627,7 +627,7 @@
                 actionType: 'irrigation', 
                 options: [{ id: 'MoreN', label: 'Apply more Nitrogen (Fix deficiency)', score: 50 }, { id: 'HerbicideSpray', label: 'Apply Herbicide via Chemigation', score: 100 }, { id: 'WaterOnly', label: 'Heavy Water Application', score: 40 }],
                 correct: 'HerbicideSpray',
-                report: "The right choice is **Herbicide via Chemigation**. NDVI stress not tied to water/T is a strong indicator of weed pressure. Nitrogen won't solve competition, and plain water only helps weeds grow faster." 
+                report: "The right choice is  Herbicide via Chemigation . NDVI stress not tied to water/T is a strong indicator of weed pressure. Nitrogen won't solve competition, and plain water only helps weeds grow faster." 
             },
             { 
                 id: 6, title: "Mitigating Heat Stress", phase: "Grain Fill (R3)", 
@@ -641,7 +641,7 @@
                 actionType: 'irrigation', 
                 options: [{ id: 'ModerateWater', label: 'Moderate Volume (Normal Cycle)', score: 70 }, { id: 'NoWater', label: 'Wait for Rain (Catastrophic Risk)', score: 10 }, { id: 'HighWater', label: 'High Volume (Emergency Cooling)', score: 100 }],
                 correct: 'HighWater',
-                report: "A T > 35 deg C + low W situation demands **Emergency High-Volume Irrigation**. This is the only way to quickly relieve severe heat/water stress and cool the canopy, minimizing yield loss." 
+                report: "A T > 35 deg C + low W situation demands  Emergency High-Volume Irrigation . This is the only way to quickly relieve severe heat/water stress and cool the canopy, minimizing yield loss." 
             },
             { 
                 id: 7, title: "Optimal Harvest Timing", phase: "Maturity", 
@@ -655,7 +655,7 @@
                 actionType: 'harvest_date', 
                 options: [{ id: 'Immediate', label: 'Harvest Immediately (High Drying Cost)', score: 70 }, { id: 'MidSep', label: 'Harvest in 5 Days (Optimal Balance)', score: 100 }, { id: 'LateSep', label: 'Harvest in 10 Days (High Lodging Risk)', score: 40 }],
                 correct: 'MidSep',
-                report: "Correct! Harvesting **in 5 days (Mid-September)** is the optimal trade-off. It allows the grain to naturally dry closer to the 18-20% target (saving money) while successfully avoiding the high risk of damage from the approaching rain/wind event."
+                report: "Correct! Harvesting  in 5 days (Mid-September)  is the optimal trade-off. It allows the grain to naturally dry closer to the 18-20% target (saving money) while successfully avoiding the high risk of damage from the approaching rain/wind event."
             }
         ]
     };
@@ -743,7 +743,7 @@
         const step = SCENARIO_STEPS[currentStepIndex];
         $("#current-step-number").textContent = step.id;
         $("#current-step-title").textContent = step.title;
-        $("#current-step-task").innerHTML = `Action Required: **${step.actionType.replace('_', ' ').toUpperCase()}**`;
+        $("#current-step-task").innerHTML = `Action Required:  ${step.actionType.replace('_', ' ').toUpperCase()} `;
         
         $$('.step-indicator').forEach((el, i) => {
             el.classList.remove('active');
@@ -765,7 +765,7 @@
         updateMiniPanel(step.stats);
         updateFieldImage(); // Update the main field image based on currentCropId
         selectedAction = null;
-        $("#field-message").textContent = `Step ${step.id}: Press **Interactive Information** to begin.`;
+        $("#field-message").textContent = `Step ${step.id}: Press  Interactive Information  to begin.`;
 
         // Restore default field click handler
         fieldAreaClickable.onclick = defaultFieldClickHandler;
@@ -777,7 +777,7 @@
         const modalContent = $("#modal-data-content");
         
         $("#modal-title").textContent = `Step ${step.id}: ${step.title}`;
-        $("#modal-event-story").innerHTML = `It is **${step.timeWindow}**. Time to make a critical agronomic decision based on satellite data.`;
+        $("#modal-event-story").innerHTML = `It is  ${step.timeWindow} . Time to make a critical agronomic decision based on satellite data.`;
         modalContent.innerHTML = '';
         
         step.data.forEach(item => {
@@ -822,7 +822,7 @@
             modal.classList.remove('visible');
             setTimeout(() => {modal.style.display = 'none';}, 300);
 
-            $("#field-message").textContent = `**${step.actionType.replace('_', ' ').toUpperCase()}** Tool selected. Click on the field to make your choice!`;
+            $("#field-message").textContent = ` ${step.actionType.replace('_', ' ').toUpperCase()}  Tool selected. Click on the field to make your choice!`;
             selectedAction = step.actionType;
         };
         $("#modal-close-btn").style.display = 'none';
@@ -907,7 +907,7 @@
 
         $("#modal-title").textContent = `REPORT: Step ${step.id} - ${step.title}`;
         $("#modal-event-story").innerHTML = `
-            <h3>⭐ Your Score for this step: **${score}%**</h3>
+            <h3>⭐ Your Score for this step:  ${score}% </h3>
             <p><strong>Your Decision:</strong> ${choiceLabel}</p>
             <hr>
             <h4>Data Interpretation and Optimal Action:</h4>
@@ -921,7 +921,7 @@
         $("#modal-action-options").style.display = 'none';
         $("#modal-confirm-btn").style.display = 'none';
         $("#modal-close-btn").style.display = 'block';
-        $("#field-message").textContent = "STEP COMPLETE. Press **Close Report** to continue.";
+        $("#field-message").textContent = "STEP COMPLETE. Press  Close Report  to continue.";
         
         $("#modal-close-btn").onclick = () => {
             modal.classList.remove('visible');
@@ -946,7 +946,7 @@
         const imageSet = CROP_IMAGE_MAP[currentCropId] || CROP_IMAGE_MAP['Maize'];
         $("#field-area").style.backgroundImage = `url('${imageSet.sequence[imageSet.sequence.length - 1]}')`;
         
-        $("#field-message").innerHTML = "SIMULATION FINISHED. <br> **Click on the field** to view the **Final Harvest Report**!";
+        $("#field-message").innerHTML = "SIMULATION FINISHED. <br>  Click on the field  to view the  Final Harvest Report !";
 
         // Disable control buttons
         $$('.icon-btn').forEach(btn => {
@@ -979,17 +979,17 @@
 
         if (finalScore > 60) {
             finalImagePath = cropData.final_good; // Use final_good image (e.g., summery.jpeg)
-            finalYieldText = `You achieved a **Fantastic Yield** of ${cropName} thanks to excellent agronomic decisions. High management efficiency. [Forecast: **${goodYield} bushels/acre**]`;
+            finalYieldText = `You achieved a  Fantastic Yield  of ${cropName} thanks to excellent agronomic decisions. High management efficiency. [Forecast:  ${goodYield} bushels/acre ]`;
             finalResultTitle = "EXCELLENT";
             finalResultColor = '#34A853'; // Green
         } else if (finalScore >= 30) {
             finalImagePath = cropData.final_decent; // Use final_decent image
-            finalYieldText = `You achieved an **Average Yield** of ${cropName}. Several sub-optimal decisions cost you a portion of the potential. [Forecast: **${decentYield} bushels/acre**]`;
+            finalYieldText = `You achieved an  Average Yield  of ${cropName}. Several sub-optimal decisions cost you a portion of the potential. [Forecast:  ${decentYield} bushels/acre ]`;
             finalResultTitle = "DECENT";
             finalResultColor = '#FFC107'; // Yellow
         } else {
             finalImagePath = cropData.final_critical; // Use final_critical image
-            finalYieldText = `You achieved a **Low/Critical Yield** of ${cropName}. Key errors were made, leading to significant losses. [Forecast: **${criticalYield} bushels/acre**]`;
+            finalYieldText = `You achieved a  Low/Critical Yield  of ${cropName}. Key errors were made, leading to significant losses. [Forecast:  ${criticalYield} bushels/acre ]`;
             finalResultTitle = "CRITICAL";
             finalResultColor = '#EA4335'; // Red
         }
@@ -1040,9 +1040,9 @@
         if (step && selectedAction === step.actionType) {
             openActionModal(step);
         } else if (selectedAction === null) {
-            showAlert("Action Required! Press **Interactive Information** first, then select the appropriate **Tool**.", 3000);
+            showAlert("Action Required! Press  Interactive Information  first, then select the appropriate  Tool .", 3000);
         } else {
-            showAlert(`Please use the selected tool: **${selectedAction.replace('_', ' ').toUpperCase()}** by clicking on the field to open the decision window.`, 3000);
+            showAlert(`Please use the selected tool:  ${selectedAction.replace('_', ' ').toUpperCase()}  by clicking on the field to open the decision window.`, 3000);
         }
     }
     
@@ -1065,10 +1065,10 @@
             const step = SCENARIO_STEPS[currentStepIndex];
 
             if (e.currentTarget.classList.contains('active') && action !== 'info' && action === step.actionType) {
-                 $("#field-message").textContent = `**${action.replace('_', ' ').toUpperCase()}** Tool selected. Click on the field to make your choice.`;
+                 $("#field-message").textContent = ` ${action.replace('_', ' ').toUpperCase()}  Tool selected. Click on the field to make your choice.`;
                  selectedAction = action;
             } else if (e.currentTarget.classList.contains('active') && action !== 'info' && action !== step.actionType) {
-                showAlert(`Wrong Tool! Action **${step.actionType.replace('_', ' ').toUpperCase()}** is required for this step.`, 2500);
+                showAlert(`Wrong Tool! Action  ${step.actionType.replace('_', ' ').toUpperCase()}  is required for this step.`, 2500);
             }
         });
     });
