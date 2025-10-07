@@ -229,14 +229,14 @@
 
 <div class="quiz-container">
     <h1>Interactive Quiz: NASA Farm Navigators</h1>
-    <p style="color: var(--text-secondary); margin-bottom: 25px;">Test your knowledge on key concepts of sustainable agriculture and the application of NASA's open data for the **NASA Farm Navigators** challenge.</p>
+    <p style="color: var(--text-secondary); margin-bottom: 25px;">Test your knowledge on key concepts of sustainable agriculture and the application of NASA's open data for the  NASA Farm Navigators  challenge.</p>
 
     <form id="quizForm">
         
         <div class="question-card" data-answer="1">
             <div class="question-icon">1</div>
             <div class="question-content">
-                <h2>Which NASA satellite-derived index is the **most direct indicator** of vegetation health and vigor?</h2>
+                <h2>Which NASA satellite-derived index is the  most direct indicator  of vegetation health and vigor?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q1" value="1"> <span>NDVI (Normalized Difference Vegetation Index)</span>
@@ -255,7 +255,7 @@
         <div class="question-card" data-answer="2">
             <div class="question-icon">2</div>
             <div class="question-content">
-                <h2>In a farming simulation based on NASA data, which variable is a **farmer-controlled input** that directly affects crop success?</h2>
+                <h2>In a farming simulation based on NASA data, which variable is a  farmer-controlled input  that directly affects crop success?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q2" value="1"> <span>Average Annual Temperature</span>
@@ -293,7 +293,7 @@
         <div class="question-card" data-answer="3">
             <div class="question-icon">4</div>
             <div class="question-content">
-                <h2>Which farming practice best aligns with the goal of **environmental sustainability** and conservation mentioned in the challenge?</h2>
+                <h2>Which farming practice best aligns with the goal of  environmental sustainability  and conservation mentioned in the challenge?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q4" value="1"> <span>Applying the maximum allowable fertilizer to guarantee yield.</span>
@@ -331,7 +331,7 @@
         <div class="question-card" data-answer="2">
             <div class="question-icon">6</div>
             <div class="question-content">
-                <h2>If a time series of NDVI data for a field shows a sudden **drop** during the peak growing season, what might that indicate to the farmer?</h2>
+                <h2>If a time series of NDVI data for a field shows a sudden  drop  during the peak growing season, what might that indicate to the farmer?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q6" value="1"> <span>The crop is ready for harvest.</span>
@@ -350,7 +350,7 @@
         <div class="question-card" data-answer="3">
             <div class="question-icon">7</div>
             <div class="question-content">
-                <h2>The challenge seeks to bridge the gap between complex NASA science and **practical farming applications**. What tool is proposed for this bridge?</h2>
+                <h2>The challenge seeks to bridge the gap between complex NASA science and  practical farming applications . What tool is proposed for this bridge?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q7" value="1"> <span>Directly funding farmers to buy satellite receiving equipment.</span>
@@ -369,7 +369,7 @@
         <div class="question-card" data-answer="1">
             <div class="question-icon">8</div>
             <div class="question-content">
-                <h2>Why is it important to know the **depth** that a Soil Moisture dataset is reporting (e.g., 0-5 cm vs. 10-20 cm)?</h2>
+                <h2>Why is it important to know the  depth  that a Soil Moisture dataset is reporting (e.g., 0-5 cm vs. 10-20 cm)?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q8" value="1"> <span>Different soil depths affect different root zones; topsoil moisture is not the same as root zone moisture.</span>
@@ -388,13 +388,13 @@
         <div class="question-card" data-answer="2">
             <div class="question-icon">9</div>
             <div class="question-content">
-                <h2>What is the best way to prevent players in the game from **misinterpreting** complex NASA data?</h2>
+                <h2>What is the best way to prevent players in the game from  misinterpreting  complex NASA data?</h2>
                 <div class="options">
                     <label>
                         <input type="radio" name="q9" value="1"> <span>Force them to read a 100-page data documentation manual before starting.</span>
                     </label>
                     <label>
-                        <input type="radio" name="q9" value="2"> <span>Include clear **cues and prompts** (hints) that highlight data limitations or relevance.</span>
+                        <input type="radio" name="q9" value="2"> <span>Include clear  cues and prompts  (hints) that highlight data limitations or relevance.</span>
                     </label>
                     <label>
                         <input type="radio" name="q9" value="3"> <span>Only show data that is 100% reliable and certain.</span>
@@ -439,53 +439,53 @@
 
     const feedbackMessages = {
         q1: {
-            correct: "Correct! **NDVI** is based on the difference between red light absorption and near-infrared light reflection, making it the most reliable measure of photosynthetically active biomass.",
-            incorrect: "Incorrect. While LST (heat) and Precipitation are important, **NDVI** is the standard for quantifying greenness and stress. Poor NDVI usually means your crops need immediate attention!",
+            correct: "Correct!  NDVI  is based on the difference between red light absorption and near-infrared light reflection, making it the most reliable measure of photosynthetically active biomass.",
+            incorrect: "Incorrect. While LST (heat) and Precipitation are important,  NDVI  is the standard for quantifying greenness and stress. Poor NDVI usually means your crops need immediate attention!",
             resource: "https://earthobservatory.nasa.gov/features/NDVI/ndvi_2.php"
         },
         q2: {
-            correct: "Correct! The farmer can only control inputs like **fertilizer** or **irrigation**. NASA data informs *when* and *how much* to apply, but the decision is the farmer's.",
-            incorrect: "Incorrect. Temperature and Soil Moisture are environmental factors reported by NASA. The farmer's decision on **Fertilizer Application** is the variable they directly manipulate to optimize yield.",
+            correct: "Correct! The farmer can only control inputs like  fertilizer  or  irrigation . NASA data informs *when* and *how much* to apply, but the decision is the farmer's.",
+            incorrect: "Incorrect. Temperature and Soil Moisture are environmental factors reported by NASA. The farmer's decision on  Fertilizer Application  is the variable they directly manipulate to optimize yield.",
             resource: "https://www.nasa.gov/general/satellite-soil-moisture/"
         },
         q3: {
-            correct: "Correct! A single pixel of low-resolution data might cover an area larger than the small farm itself, averaging the farm's condition with forests, roads, or other lands. This leads to **misinterpretation**.",
-            incorrect: "Incorrect. This relates to the **Data Utilization** pitfall. The low resolution makes precise farm management impossible because the data point is not specific to the farm's boundaries.",
+            correct: "Correct! A single pixel of low-resolution data might cover an area larger than the small farm itself, averaging the farm's condition with forests, roads, or other lands. This leads to  misinterpretation .",
+            incorrect: "Incorrect. This relates to the  Data Utilization  pitfall. The low resolution makes precise farm management impossible because the data point is not specific to the farm's boundaries.",
             resource: "https://www.earthdata.nasa.gov/faq/articles/what-is-spatial-resolution"
         },
         q4: {
-            correct: "Correct! **Precision irrigation** uses data (like NASA's soil moisture) to apply *only* the water that is needed, conserving resources and minimizing runoff.",
-            incorrect: "Incorrect. Sustainability focuses on minimizing resource use. Applying excess fertilizer (Q1) or over-irrigating (Q2) both waste resources and harm the environment. **Precision** is key.",
+            correct: "Correct!  Precision irrigation  uses data (like NASA's soil moisture) to apply *only* the water that is needed, conserving resources and minimizing runoff.",
+            incorrect: "Incorrect. Sustainability focuses on minimizing resource use. Applying excess fertilizer (Q1) or over-irrigating (Q2) both waste resources and harm the environment.  Precision  is key.",
             resource: "https://www.fao.org/3/a-az441e.pdf"
         },
         q5: {
-            correct: "Correct! **NASA POWER** (Prediction of Worldwide Energy Resources) provides easily accessible global, long-term climate data perfect for agricultural models and planning.",
-            incorrect: "Incorrect. The resource for *climate* and *solar energy* data relevant to agriculture is **NASA POWER**. It aggregates data from multiple NASA satellites into an easily usable format.",
+            correct: "Correct!  NASA POWER  (Prediction of Worldwide Energy Resources) provides easily accessible global, long-term climate data perfect for agricultural models and planning.",
+            incorrect: "Incorrect. The resource for *climate* and *solar energy* data relevant to agriculture is  NASA POWER . It aggregates data from multiple NASA satellites into an easily usable format.",
             resource: "https://power.larc.nasa.gov/"
         },
         q6: {
-            correct: "Correct! A high NDVI means healthy, rapidly growing plants. A sudden **drop** indicates the plant is reflecting less near-infrared light, which is a classic sign of **stress** (drought, disease, or nutrient deficiency).",
+            correct: "Correct! A high NDVI means healthy, rapidly growing plants. A sudden  drop  indicates the plant is reflecting less near-infrared light, which is a classic sign of  stress  (drought, disease, or nutrient deficiency).",
             incorrect: "Incorrect. A sudden drop in NDVI usually signals the plant is stressed or dying. If a farmer ignores this, it will lead to significant yield loss.",
             resource: "https://www.usgs.gov/media/images/ndvi-vegetation-stress"
         },
         q7: {
-            correct: "Correct! The challenge specifically calls for creating an **engaging, educational game** to serve as a user-friendly tool to bridge the data-to-application gap.",
-            incorrect: "Incorrect. While education is the goal, the proposed solution outlined in the challenge summary is the creation of a **creative, engaging, educational game** that simulates real-world scenarios.",
+            correct: "Correct! The challenge specifically calls for creating an  engaging, educational game  to serve as a user-friendly tool to bridge the data-to-application gap.",
+            incorrect: "Incorrect. While education is the goal, the proposed solution outlined in the challenge summary is the creation of a  creative, engaging, educational game  that simulates real-world scenarios.",
             resource: "https://www.nasa.gov/solve/spaceapps-challenge/challenge-detail-18" // Link to the challenge summary
         },
         q8: {
             correct: "Correct! Plant roots absorb moisture at different depths. Surface moisture (0-5 cm) is affected quickly by rain/sun, while root zone moisture (deeper) dictates the *need* for irrigation.",
-            incorrect: "Incorrect. Knowing the depth is vital for making correct irrigation decisions. If the game only shows surface moisture, the simulation will be too simplistic (**Surface-level Simulation Pitfall**).",
+            incorrect: "Incorrect. Knowing the depth is vital for making correct irrigation decisions. If the game only shows surface moisture, the simulation will be too simplistic ( Surface-level Simulation Pitfall ).",
             resource: "https://smos.org/data/soil-moisture-depths/"
         },
         q9: {
-            correct: "Correct! **Cues and prompts** (hints) guide the player's decision-making and ensure that complex data limitations (like resolution) are considered without overwhelming the player.",
-            incorrect: "Incorrect. The challenge explicitly advises using **Cues and Prompts** to prevent misinterpretation, making the learning experience easier and more dynamic.",
+            correct: "Correct!  Cues and prompts  (hints) guide the player's decision-making and ensure that complex data limitations (like resolution) are considered without overwhelming the player.",
+            incorrect: "Incorrect. The challenge explicitly advises using  Cues and Prompts  to prevent misinterpretation, making the learning experience easier and more dynamic.",
             resource: "https://www.nasa.gov/solve/spaceapps-challenge/challenge-detail-18" // Referencing the Game Design Tips section
         },
         q10: {
-            correct: "Correct! Excess nitrogen and phosphorus runoff leads to **eutrophication**, where rapid algae growth consumes oxygen, suffocating fish and creating 'dead zones'.",
-            incorrect: "Incorrect. The main immediate environmental threat from fertilizer runoff is **eutrophication** in water bodies, which leads to oxygen depletion and the creation of 'dead zones'.",
+            correct: "Correct! Excess nitrogen and phosphorus runoff leads to  eutrophication , where rapid algae growth consumes oxygen, suffocating fish and creating 'dead zones'.",
+            incorrect: "Incorrect. The main immediate environmental threat from fertilizer runoff is  eutrophication  in water bodies, which leads to oxygen depletion and the creation of 'dead zones'.",
             resource: "https://oceanservice.noaa.gov/facts/eutrophication.html"
         }
     };
